@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unframe — Portfolio Marketing OS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg:        #0C0F1A;
+    --surface:   #131929;
+    --surface2:  #1A2236;
+    --surface3:  #1F2B42;
+    --border:    #26344F;
+    --border2:   #2E3F5C;
+    --text:      #E8EDF5;
+    --text2:     #8A9BB8;
+    --text3:     #556078;
+    --accent:    #4F8EF7;
+    --accent2:   #2563EB;
+    --green:     #22C55E;
+    --yellow:    #F59E0B;
+    --red:       #EF4444;
+    --purple:    #A78BFA;
+    --teal:      #14B8A6;
+    --mono:      'DM Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    height: 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .nav-sep { width: 1px; height: 20px; background: var(--border); }
+  .nav-context { font-size: 13px; color: var(--text2); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: #fff;
+  }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .breadcrumb span { cursor: pointer; transition: color 0.15s; }
+  .breadcrumb span:hover { color: var(--accent); }
+  .breadcrumb .active { color: var(--text2); cursor: default; }
+  .breadcrumb .sep { color: var(--border2); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ── SCROLLABLE CONTENT AREA ── */
+  .scroll-area { flex: 1; overflow-y: auto; padding: 24px; }
+  .scroll-area::-webkit-scrollbar { width: 4px; }
+  .scroll-area::-webkit-scrollbar-track { background: transparent; }
+  .scroll-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ── SCREEN 1: DASHBOARD ── */
+  .dash-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .dash-title { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .dash-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .dash-actions { display: flex; gap: 10px; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+  /* Summary strip */
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .summary-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .summary-val { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .summary-change { font-size: 11px; margin-top: 3px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--text3); }
+
+  /* Filter row */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .filter-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: transparent;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .filter-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .filter-pill:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+  .filter-search {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    width: 200px;
+  }
+  .filter-search::placeholder { color: var(--text3); }
+  .filter-search:focus { outline: none; border-color: var(--accent); }
+
+  /* Property grid */
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .property-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+  }
+  .property-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.1); }
+  .property-card.flagged { border-color: rgba(245,158,11,0.4); }
+  .property-card.urgent { border-color: rgba(239,68,68,0.4); }
+
+  .property-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .property-name { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .property-addr { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+  }
+  .status-green { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+  .status-yellow { background: var(--yellow); box-shadow: 0 0 6px rgba(245,158,11,0.5); }
+  .status-red { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+
+  .property-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .metric-mini { }
+  .metric-mini-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; }
+  .metric-mini-val { font-size: 14px; font-weight: 600; margin-top: 1px; font-family: var(--mono); }
+
+  .property-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .report-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+  .badge-ready { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-review { background: rgba(245,158,11,0.15); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-missing { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+  .badge-draft { background: rgba(79,142,247,0.15); color: var(--accent); border: 1px solid rgba(79,142,247,0.2); }
+  .view-btn {
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  /* ── SCREEN 2: PROPERTY DETAIL ── */
+  .detail-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .detail-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .detail-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .detail-actions { display: flex; gap: 10px; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .metric-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .metric-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .metric-val { font-size: 24px; font-weight: 700; font-family: var(--mono); letter-spacing: -0.5px; }
+  .metric-change { font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .full-col { margin-bottom: 20px; }
+
+  .panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title { font-size: 13px; font-weight: 600; }
+  .panel-action { font-size: 12px; color: var(--accent); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
+  .panel-body { padding: 14px 16px; }
+
+  /* channel bar chart */
+  .channel-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .channel-row:last-child { margin-bottom: 0; }
+  .channel-name { font-size: 12px; color: var(--text2); width: 110px; flex-shrink: 0; }
+  .channel-bar-wrap { flex: 1; background: var(--surface3); border-radius: 4px; height: 6px; overflow: hidden; }
+  .channel-bar { height: 100%; border-radius: 4px; }
+  .channel-val { font-size: 12px; font-family: var(--mono); color: var(--text); width: 50px; text-align: right; flex-shrink: 0; }
+  .channel-spend { font-size: 11px; color: var(--text3); width: 50px; text-align: right; flex-shrink: 0; }
+
+  /* funnel */
+  .funnel-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .funnel-row:last-child { margin-bottom: 0; }
+  .funnel-label { font-size: 12px; color: var(--text2); width: 120px; flex-shrink: 0; }
+  .funnel-count { font-size: 18px; font-weight: 700; font-family: var(--mono); width: 60px; }
+  .funnel-rate { font-size: 11px; color: var(--text3); }
+  .funnel-bar-wrap { flex: 1; background: var(--surface3); border-radius: 4px; height: 8px; overflow: hidden; }
+  .funnel-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--purple)); }
+
+  /* trend sparkline placeholder */
+  .trend-spark { height: 60px; display: flex; align-items: flex-end; gap: 4px; }
+  .spark-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 4px; opacity: 0.8; }
+
+  /* report history */
+  .report-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .report-row:last-child { border-bottom: none; }
+  .report-month { font-size: 13px; font-weight: 500; }
+  .report-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .report-row-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* ── EDITOR SIDEBAR (shared with old layout) ── */
+  .editor-sidebar {
+    width: 300px;
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sidebar-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .sidebar-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .ai-badge {
+    font-size: 9px; padding: 2px 6px;
+    background: rgba(79,142,247,0.15); color: var(--accent);
+    border-radius: 4px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 3px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border2); }
+  .chat-msg { display: flex; flex-direction: column; gap: 4px; }
+  .msg-from { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: 0.3px; }
+  .msg-bubble { padding: 10px 12px; border-radius: 10px; font-size: 12.5px; line-height: 1.5; max-width: 100%; }
+  .msg-ai { background: var(--surface3); color: var(--text); border-radius: 4px 10px 10px 10px; }
+  .msg-user { background: rgba(79,142,247,0.15); color: var(--text); border-radius: 10px 4px 10px 10px; align-self: flex-end; }
+  .msg-action-card {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 12px; margin-top: 4px;
+  }
+  .msg-action-title { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+  .msg-action-preview { font-size: 11px; color: var(--text3); line-height: 1.5; margin-bottom: 8px; white-space: pre-line; }
+  .msg-action-btns { display: flex; gap: 8px; }
+  .btn-approve {
+    background: rgba(34,197,94,0.15); color: var(--green);
+    border: 1px solid rgba(34,197,94,0.3); padding: 5px 12px;
+    border-radius: 6px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-approve:hover { background: rgba(34,197,94,0.25); }
+  .btn-reject {
+    background: transparent; color: var(--text3);
+    border: 1px solid var(--border); padding: 5px 12px;
+    border-radius: 6px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-reject:hover { color: var(--text); border-color: var(--border2); }
+  .chat-input-area {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+  }
+  .chat-input {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px; color: var(--text);
+    font-size: 12px; font-family: 'Inter', sans-serif;
+    resize: none; min-height: 36px; max-height: 80px; line-height: 1.4;
+  }
+  .chat-input::placeholder { color: var(--text3); }
+  .chat-input:focus { outline: none; border-color: var(--accent); }
+  .btn-send {
+    width: 32px; height: 32px; background: var(--accent);
+    border: none; border-radius: 8px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .btn-send:hover { background: var(--accent2); }
+  .btn-send svg { width: 14px; height: 14px; }
+
+  .diff-banner {
+    background: rgba(245,158,11,0.08);
+    border-bottom: 1px solid rgba(245,158,11,0.2);
+    padding: 8px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--yellow); flex-shrink: 0;
+  }
+  .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+
+  .suggestion-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .suggestion-pill {
+    font-size: 11px; padding: 5px 10px; border-radius: 8px;
+    background: var(--surface3); color: var(--text2);
+    border: 1px solid var(--border); cursor: pointer;
+    transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .suggestion-pill:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+
+  .typing { display: flex; gap: 4px; align-items: center; padding: 10px 12px; background: var(--surface3); border-radius: 4px 10px 10px 10px; width: fit-content; }
+  .typing span { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  .editor-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Thumbnail rail */
+  .slide-rail {
+    width: 168px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .rail-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .rail-count {
+    background: var(--surface3);
+    color: var(--text3);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+  .rail-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rail-list::-webkit-scrollbar { width: 3px; }
+  .rail-list::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  .rail-thumb {
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+    position: relative;
+    background: var(--surface2);
+  }
+  .rail-thumb:hover { border-color: var(--border2); }
+  .rail-thumb.active { border-color: var(--accent); }
+  .rail-thumb.changed { border-color: rgba(245,158,11,0.6); }
+  .rail-thumb.changed.active { border-color: var(--accent); }
+  .rail-thumb.ai-added { border-color: rgba(79,142,247,0.4); }
+
+  .rail-thumb-inner {
+    aspect-ratio: 16/9;
+    background: var(--surface3);
+    display: flex;
+    flex-direction: column;
+    padding: 6px 7px;
+    gap: 3px;
+    pointer-events: none;
+  }
+  .thumb-title-bar { height: 6px; border-radius: 2px; background: var(--text3); width: 70%; }
+  .thumb-body-bar { height: 3px; border-radius: 2px; background: var(--border2); }
+  .thumb-body-bar.w90 { width: 90%; }
+  .thumb-body-bar.w70 { width: 70%; }
+  .thumb-body-bar.w55 { width: 55%; }
+  .thumb-chart { display: flex; align-items: flex-end; gap: 2px; height: 18px; margin-top: 2px; }
+  .thumb-bar { flex: 1; border-radius: 1px 1px 0 0; background: var(--accent); opacity: 0.5; }
+
+  .rail-thumb-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px;
+    background: var(--surface);
+  }
+  .rail-thumb-num { font-size: 9px; color: var(--text3); font-family: var(--mono); }
+  .rail-thumb-tag {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .rtag-changed { background: rgba(245,158,11,0.2); color: var(--yellow); }
+  .rtag-ai { background: rgba(79,142,247,0.2); color: var(--accent); }
+
+  /* Slide canvas */
+  .slide-canvas-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0A0D16;
+  }
+  .editor-topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .editor-title { font-size: 14px; font-weight: 600; }
+  .editor-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .editor-actions { display: flex; gap: 8px; }
+
+  .slide-viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  /* The actual slide */
+  .pptx-slide {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16/9;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Slide layouts */
+  .slide-cover {
+    background: linear-gradient(135deg, #0C1A3A 0%, #1E3A6E 100%);
+    padding: 40px 48px;
+    color: #fff;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .slide-cover .s-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+  .slide-cover .s-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+  .slide-cover .s-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; }
+  .slide-cover .s-stats { display: flex; gap: 32px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .slide-cover .s-stat-val { font-size: 26px; font-weight: 700; font-family: var(--mono); }
+  .slide-cover .s-stat-label { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .slide-content {
+    padding: 28px 36px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #1E293B;
+  }
+  .s-slide-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0F172A;
+    border-bottom: 2px solid #E2E8F0;
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+    outline: none;
+    cursor: text;
+  }
+  .s-slide-title:focus { border-bottom-color: #4F8EF7; }
+  .s-slide-title[contenteditable]:empty:before { content: attr(data-placeholder); color: #94A3B8; }
+
+  .s-body { font-size: 12px; color: #334155; line-height: 1.7; outline: none; cursor: text; flex: 1; }
+  .s-body:focus { background: rgba(79,142,247,0.04); border-radius: 4px; }
+
+  .s-kpi-row { display: flex; gap: 10px; }
+  .s-kpi-box {
+    flex: 1;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .s-kpi-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 3px; }
+  .s-kpi-val { font-size: 20px; font-weight: 700; color: #0F172A; font-family: var(--mono); }
+  .s-kpi-change { font-size: 10px; margin-top: 2px; }
+  .s-kpi-up { color: #16A34A; }
+  .s-kpi-down { color: #DC2626; }
+  .s-kpi-flat { color: #64748B; }
+
+  .s-bar-chart { display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: center; }
+  .s-bar-row { display: flex; align-items: center; gap: 8px; }
+  .s-bar-lbl { font-size: 10px; color: #64748B; width: 100px; flex-shrink: 0; }
+  .s-bar-wrap { flex: 1; background: #F1F5F9; border-radius: 3px; height: 8px; overflow: hidden; }
+  .s-bar { height: 100%; border-radius: 3px; }
+  .s-bar-val { font-size: 10px; font-family: var(--mono); color: #334155; width: 40px; text-align: right; flex-shrink: 0; }
+
+  .s-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  .s-table th { background: #F8FAFC; padding: 6px 8px; text-align: left; color: #64748B; font-weight: 600; border-bottom: 1px solid #E2E8F0; }
+  .s-table td { padding: 6px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; }
+  .s-table tr:last-child td { border-bottom: none; }
+
+  .s-rec-item { display: flex; gap: 8px; font-size: 11px; color: #1E40AF; padding: 5px 8px; background: #EFF6FF; border-radius: 5px; margin-bottom: 5px; }
+  .s-rec-num { color: #3B82F6; font-weight: 700; flex-shrink: 0; }
+
+  .slide-changed-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    background: rgba(245,158,11,0.15);
+    color: #D97706;
+    border: 1px solid rgba(245,158,11,0.3);
+  }
+  .slide-ai-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    background: rgba(79,142,247,0.12);
+    color: #4F8EF7;
+    border: 1px solid rgba(79,142,247,0.2);
+  }
+
+  .slide-edit-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: rgba(255,255,255,0.0);
+    background: rgba(79,142,247,0.8);
+    padding: 3px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+  .pptx-slide:hover .slide-edit-hint { color: rgba(255,255,255,0.9); }
+
+  /* Slide nav bar */
+  .slide-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .slide-nav-btn {
+    font-size: 12px;
+    color: var(--text2);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .slide-nav-btn:hover { border-color: var(--border2); color: var(--text); }
+  .slide-nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .slide-nav-indicator { font-size: 12px; color: var(--text3); font-family: var(--mono); min-width: 50px; text-align: center; }
+
+  /* ── SCREEN 4: AGENT CHAT (DASHBOARD BULK) ── */
+  .agent-overlay {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+    overflow: hidden;
+    max-height: 500px;
+  }
+  .agent-overlay.open { display: flex; }
+  .agent-overlay-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agent-overlay-title {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .agent-pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .agent-close { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; line-height: 1; }
+  .agent-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 200px;
+    max-height: 300px;
+  }
+  .agent-input-area {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .agent-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+  }
+  .agent-input::placeholder { color: var(--text3); }
+  .agent-input:focus { outline: none; border-color: var(--accent); }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(79,142,247,0.4);
+    z-index: 199;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(79,142,247,0.5); }
+  .fab svg { width: 22px; height: 22px; }
+  .fab-label {
+    position: fixed;
+    bottom: 30px;
+    right: 84px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: var(--text2);
+    z-index: 199;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .fab:hover + .fab-label { opacity: 1; }
+
+  /* ── SCREEN 5: OWNER PREVIEW ── */
+  .preview-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+  .preview-controls {
+    width: 260px;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    padding: 16px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .preview-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #F1F5F9;
+  }
+  .preview-main::-webkit-scrollbar { width: 4px; }
+  .preview-main::-webkit-scrollbar-thumb { background: #CBD5E1; }
+
+  .preview-controls-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+  .control-item { margin-bottom: 14px; }
+  .control-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+  .control-val {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text);
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+  }
+  .control-val:focus { outline: none; border-color: var(--accent); }
+
+  /* The owner report */
+  .owner-report {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .report-cover {
+    background: linear-gradient(135deg, #0C1A3A 0%, #1E3A6E 100%);
+    padding: 40px;
+    color: #fff;
+  }
+  .report-cover-logo { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 30px; }
+  .report-cover-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .report-cover-sub { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+  .report-cover-stats { display: flex; gap: 30px; }
+  .cover-stat-val { font-size: 28px; font-weight: 700; font-family: var(--mono); }
+  .cover-stat-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+
+  .report-body { padding: 32px 40px; }
+  .report-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #64748B;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E2E8F0;
+  }
+  .report-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .report-kpi {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .report-kpi-label { font-size: 11px; color: #64748B; margin-bottom: 4px; }
+  .report-kpi-val { font-size: 20px; font-weight: 700; color: #0F172A; font-family: var(--mono); }
+  .report-kpi-change { font-size: 11px; margin-top: 3px; }
+  .rpt-up { color: #16A34A; }
+  .rpt-down { color: #DC2626; }
+
+  .report-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; }
+  .report-table th { text-align: left; font-size: 11px; color: #64748B; font-weight: 600; padding: 8px 10px; border-bottom: 1px solid #E2E8F0; }
+  .report-table td { padding: 10px 10px; border-bottom: 1px solid #F1F5F9; color: #1E293B; }
+  .report-table tr:last-child td { border-bottom: none; }
+
+  .report-rec-box {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+  .rec-header { font-size: 12px; font-weight: 700; color: #1D4ED8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .rec-item { font-size: 13px; color: #1E40AF; padding: 4px 0; display: flex; gap: 8px; }
+  .rec-bullet { color: #3B82F6; flex-shrink: 0; }
+
+  /* chips in controls */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--surface3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.active { background: rgba(79,142,247,0.15); color: var(--accent); border-color: rgba(79,142,247,0.3); }
+
+  /* publish bar */
+  .publish-bar {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .publish-meta { font-size: 11px; color: var(--text3); }
+
+  /* ── SUGGESTION PILLS ── */
+  .suggestion-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .suggestion-pill {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: var(--surface3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .suggestion-pill:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+
+  /* loading dot */
+  .typing { display: flex; gap: 4px; align-items: center; padding: 10px 12px; background: var(--surface3); border-radius: 4px 10px 10px 10px; width: fit-content; }
+  .typing span { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+  /* hide fab on screens 3 and 5 */
+  .no-fab .fab, .no-fab .fab-label { display: none; }
+
+  /* ── PROPERTY TABLE ── */
+  .prop-table-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .prop-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .prop-table thead th {
+    background: var(--surface3);
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .prop-table tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .prop-row { cursor: pointer; transition: background 0.12s; }
+  .prop-row:hover { background: var(--surface3); }
+  .prop-row:last-child td { border-bottom: none; }
+  .flagged-row { background: rgba(245,158,11,0.03); }
+  .urgent-row { background: rgba(239,68,68,0.03); }
+  .prop-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .prop-addr { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .metric-chip {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--mono);
+    padding: 2px 7px;
+    border-radius: 5px;
+  }
+  .metric-chip.green { background: rgba(34,197,94,0.12); color: var(--green); }
+  .metric-chip.yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
+  .metric-chip.red { background: rgba(239,68,68,0.12); color: var(--red); }
+  .row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+  /* ── AGENT MODAL (Claude-style) ── */
+  .agent-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 680px;
+    max-width: 95vw;
+    height: 560px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+    z-index: 200;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .agent-modal.open { display: flex; }
+  .agent-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .agent-modal-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .agent-modal-msgs::-webkit-scrollbar { width: 4px; }
+  .agent-modal-msgs::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 2px; }
+  .agent-msg-row { display: flex; }
+  .agent-row-ai { justify-content: flex-start; }
+  .agent-row-user { justify-content: flex-end; }
+  .agent-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .agent-bubble-ai {
+    background: #FFFFFF;
+    color: #1E293B;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px 12px 12px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .agent-bubble-user {
+    background: #4F8EF7;
+    color: #fff;
+    border-radius: 12px 4px 12px 12px;
+  }
+  .agent-bubble-action {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px 12px 12px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    max-width: 90%;
+    overflow: hidden;
+  }
+  .action-bubble-header {
+    padding: 10px 14px;
+    background: #F1F5F9;
+    border-bottom: 1px solid #E2E8F0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748B;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .action-bubble-body { padding: 12px 14px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-line; }
+  .action-bubble-footer {
+    padding: 10px 14px;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    gap: 8px;
+  }
+  .btn-approve-white {
+    padding: 7px 16px;
+    background: #22C55E;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-approve-white:hover { background: #16A34A; }
+  .btn-adjust-white {
+    padding: 7px 16px;
+    background: #fff;
+    color: #64748B;
+    border: 1px solid #E2E8F0;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn-adjust-white:hover { border-color: #CBD5E1; color: #334155; }
+  .agent-suggestions { display: flex; flex-direction: column; gap: 6px; }
+  .agent-sugg {
+    text-align: left;
+    padding: 9px 13px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #334155;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .agent-sugg:hover { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; }
+  .agent-modal-input {
+    padding: 14px 20px;
+    border-top: 1px solid #E2E8F0;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .agent-input-wrap {
+    display: flex;
+    align-items: center;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 4px 4px 4px 14px;
+    gap: 8px;
+  }
+  .agent-input-wrap:focus-within { border-color: #93C5FD; box-shadow: 0 0 0 3px rgba(147,197,253,0.2); }
+  .agent-modal-input-field {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 13.5px;
+    color: #1E293B;
+    font-family: 'Inter', sans-serif;
+    padding: 6px 0;
+  }
+  .agent-modal-input-field::placeholder { color: #94A3B8; }
+  .agent-modal-input-field:focus { outline: none; }
+  .agent-send-btn {
+    width: 34px; height: 34px;
+    background: #4F8EF7;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .agent-send-btn:hover { background: #2563EB; }
+  .agent-typing {
+    display: flex; gap: 4px; align-items: center;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px 12px 12px 12px;
+    width: fit-content;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .agent-typing span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #94A3B8;
+    animation: blink 1.2s infinite;
+  }
+  .agent-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .agent-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ── GENERATION OVERLAY ── */
+  .gen-step { display: flex; align-items: flex-start; gap: 12px; transition: opacity 0.3s; }
+  .gen-step-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; transition: all 0.3s;
+  }
+  .gen-step-icon.pending { background: #1A2236; color: #556078; border: 1px solid #26344F; }
+  .gen-step-icon.running { background: rgba(79,142,247,0.15); color: #4F8EF7; border: 1px solid rgba(79,142,247,0.3); animation: spin 1s linear infinite; }
+  .gen-step-icon.done { background: rgba(34,197,94,0.15); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .gen-step-label { font-size: 13px; font-weight: 500; color: #E8EDF5; margin-bottom: 2px; }
+  .gen-step-sub { font-size: 11px; color: #556078; }
+
+  .preview-slide { display: none; }
+  .preview-slide.active { display: block; }
+  #preview-slides-wrap { background: #fff; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topnav">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Unframe
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-context">Portfolio Marketing OS</div>
+  <div class="nav-right">
+    <div style="font-size:12px;color:var(--text3);">Yoav A.</div>
+    <div class="nav-avatar">YA</div>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb" id="breadcrumb">
+  <span onclick="goTo('dash')">Dashboard</span>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 1: DASHBOARD
+════════════════════════════════════ -->
+<div class="screen active" id="screen-dash">
+  <div class="scroll-area">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Portfolio Dashboard</div>
+        <div class="dash-sub">June 2025 · 40 properties · Last synced 2 hours ago</div>
+      </div>
+      <div class="dash-actions">
+        <button class="btn btn-ghost" onclick="openAgent()">Agent</button>
+        <button class="btn btn-primary">Generate All Drafts</button>
+      </div>
+    </div>
+
+    <!-- Summary strip -->
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div class="summary-label">Avg Occupancy</div>
+        <div class="summary-val" style="color:var(--green)">91.4%</div>
+        <div class="summary-change up">↑ 1.2% vs May</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Leads</div>
+        <div class="summary-val">2,847</div>
+        <div class="summary-change up">↑ 14% vs May</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Lead→Lease Conv.</div>
+        <div class="summary-val">8.3%</div>
+        <div class="summary-change down">↓ 0.4% vs May</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Ad Spend</div>
+        <div class="summary-val">$184K</div>
+        <div class="summary-change neutral">↔ within budget</div>
+      </div>
+    </div>
+
+    <!-- Filter row -->
+    <div class="filter-row">
+      <button class="filter-pill active">All (40)</button>
+      <button class="filter-pill" onclick="filterPill(this)">🟢 Ready (28)</button>
+      <button class="filter-pill" onclick="filterPill(this)">🟡 Needs Review (8)</button>
+      <button class="filter-pill" onclick="filterPill(this)">🔴 Missing Data (4)</button>
+      <input class="filter-search" placeholder="Search properties…">
+    </div>
+
+    <!-- Property TABLE -->
+    <div class="prop-table-wrap">
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th style="width:20px"></th>
+            <th>Property</th>
+            <th>Occupancy</th>
+            <th>Vacancy</th>
+            <th>Leads</th>
+            <th>Lead→Lease</th>
+            <th>Ad Spend</th>
+            <th>Top Channel</th>
+            <th>Reputation</th>
+            <th>Report Status</th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="prop-row" onclick="goTo('detail')">
+            <td><div class="status-dot status-green"></div></td>
+            <td>
+              <div class="prop-name">Riverside Commons</div>
+              <div class="prop-addr">Austin, TX · 240 units</div>
+            </td>
+            <td><span class="metric-chip green">94.2%</span></td>
+            <td>13</td>
+            <td>142</td>
+            <td>11.3%</td>
+            <td>$4,200</td>
+            <td>Zillow</td>
+            <td>4.6</td>
+            <td><span class="report-badge badge-ready">Draft Ready</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row flagged-row" onclick="goTo('detail')">
+            <td><div class="status-dot status-yellow"></div></td>
+            <td>
+              <div class="prop-name">The Aldridge</div>
+              <div class="prop-addr">Denver, CO · 180 units</div>
+            </td>
+            <td><span class="metric-chip yellow">87.8%</span></td>
+            <td>22</td>
+            <td>89</td>
+            <td>6.7%</td>
+            <td>$5,800</td>
+            <td>Google Ads</td>
+            <td>4.2</td>
+            <td><span class="report-badge badge-review">Needs Review</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row urgent-row">
+            <td><div class="status-dot status-red"></div></td>
+            <td>
+              <div class="prop-name">Northgate Flats</div>
+              <div class="prop-addr">Phoenix, AZ · 312 units</div>
+            </td>
+            <td><span class="metric-chip red">81.4%</span></td>
+            <td>58</td>
+            <td><span style="color:var(--red)">—</span></td>
+            <td><span style="color:var(--red)">—</span></td>
+            <td>$6,100</td>
+            <td><span style="color:var(--text3)">—</span></td>
+            <td>3.9</td>
+            <td><span class="report-badge badge-missing">Missing Data</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost" style="padding:5px 12px;font-size:11px;color:var(--red);border-color:rgba(239,68,68,0.3)">Fix Data</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row">
+            <td><div class="status-dot status-green"></div></td>
+            <td>
+              <div class="prop-name">Lakeview Terrace</div>
+              <div class="prop-addr">Chicago, IL · 156 units</div>
+            </td>
+            <td><span class="metric-chip green">96.1%</span></td>
+            <td>6</td>
+            <td>78</td>
+            <td>12.8%</td>
+            <td>$2,900</td>
+            <td>Apartments.com</td>
+            <td>4.8</td>
+            <td><span class="report-badge badge-ready">Draft Ready</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row">
+            <td><div class="status-dot status-green"></div></td>
+            <td>
+              <div class="prop-name">Skyline on 5th</div>
+              <div class="prop-addr">Seattle, WA · 200 units</div>
+            </td>
+            <td><span class="metric-chip green">93.5%</span></td>
+            <td>13</td>
+            <td>104</td>
+            <td>9.6%</td>
+            <td>$3,700</td>
+            <td>Zillow</td>
+            <td>4.5</td>
+            <td><span class="report-badge badge-draft">In Progress</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost" style="padding:5px 12px;font-size:11px;">View Status</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row flagged-row">
+            <td><div class="status-dot status-yellow"></div></td>
+            <td>
+              <div class="prop-name">Park Row East</div>
+              <div class="prop-addr">Nashville, TN · 128 units</div>
+            </td>
+            <td><span class="metric-chip yellow">88.3%</span></td>
+            <td>15</td>
+            <td>61</td>
+            <td>7.1%</td>
+            <td>$4,400</td>
+            <td>Facebook Ads</td>
+            <td>4.1</td>
+            <td><span class="report-badge badge-review">Needs Review</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row">
+            <td><div class="status-dot status-green"></div></td>
+            <td>
+              <div class="prop-name">Harbor View</div>
+              <div class="prop-addr">Miami, FL · 280 units</div>
+            </td>
+            <td><span class="metric-chip green">92.8%</span></td>
+            <td>20</td>
+            <td>118</td>
+            <td>9.3%</td>
+            <td>$5,100</td>
+            <td>Zillow</td>
+            <td>4.4</td>
+            <td><span class="report-badge badge-ready">Draft Ready</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+          <tr class="prop-row">
+            <td><div class="status-dot status-green"></div></td>
+            <td>
+              <div class="prop-name">The Edison</div>
+              <div class="prop-addr">Portland, OR · 96 units</div>
+            </td>
+            <td><span class="metric-chip green">95.8%</span></td>
+            <td>4</td>
+            <td>52</td>
+            <td>13.4%</td>
+            <td>$1,800</td>
+            <td>Google Ads</td>
+            <td>4.7</td>
+            <td><span class="report-badge badge-ready">Draft Ready</span></td>
+            <td class="row-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;" onclick="generateReport(this)">Open Draft</button>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;">⋯</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:12px 16px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);">
+        Showing 8 of 40 properties &nbsp;·&nbsp; <span style="color:var(--accent);cursor:pointer;font-weight:500;">Next page →</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 2: PROPERTY DETAIL
+════════════════════════════════════ -->
+<div class="screen" id="screen-detail">
+  <div class="scroll-area">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-name">Riverside Commons</div>
+        <div class="detail-sub" id="detail-sub">Austin, TX · 240 units · Owner: Greystar Properties</div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-ghost">View History</button>
+        <button class="btn btn-primary" onclick="generateReport(null)">Open June Draft →</button>
+      </div>
+    </div>
+
+    <!-- KPI metrics — the 7 from the brief -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Occupancy</div>
+        <div class="metric-val" style="color:var(--green)">94.2%</div>
+        <div class="metric-change up">↑ 1.8% vs May</div>
+        <div class="metric-sub">227 / 240 units leased</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Vacancy</div>
+        <div class="metric-val" style="color:var(--yellow)">13</div>
+        <div class="metric-change up">↓ 4 units vs May</div>
+        <div class="metric-sub">5.8% vacant</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Leads</div>
+        <div class="metric-val">142</div>
+        <div class="metric-change up">↑ 22 vs May</div>
+        <div class="metric-sub">Across all channels</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Lead→Lease Conv.</div>
+        <div class="metric-val">11.3%</div>
+        <div class="metric-change up">↑ 0.9% vs May</div>
+        <div class="metric-sub">16 leases signed</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Ad Spend</div>
+        <div class="metric-val">$4.2K</div>
+        <div class="metric-change neutral">↔ budget</div>
+        <div class="metric-sub">$263/lease signed</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Reputation Score</div>
+        <div class="metric-val">4.6<span style="font-size:14px;color:var(--text3)">/5</span></div>
+        <div class="metric-change up">↑ 0.2 vs May</div>
+        <div class="metric-sub">Google · Yelp · AptList</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Top Channel</div>
+        <div class="metric-val" style="font-size:16px">Zillow</div>
+        <div class="metric-change up">58 leads this month</div>
+        <div class="metric-sub">41% of total leads</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Trend</div>
+        <div style="margin-top:4px;">
+          <div class="trend-spark" id="trend-spark"></div>
+        </div>
+        <div class="metric-sub" style="margin-top:4px;">3-month upward</div>
+      </div>
+    </div>
+
+    <!-- Channel + Funnel -->
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Channel Performance</div>
+          <button class="panel-action">Full breakdown</button>
+        </div>
+        <div class="panel-body">
+          <div class="channel-row">
+            <div class="channel-name">Zillow</div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:82%;background:var(--accent)"></div></div>
+            <div class="channel-val">58 leads</div>
+            <div class="channel-spend">$1.2K</div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">Google Ads</div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:54%;background:var(--yellow)"></div></div>
+            <div class="channel-val">38 leads</div>
+            <div class="channel-spend">$1.8K</div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">Apartments.com</div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:34%;background:var(--purple)"></div></div>
+            <div class="channel-val">24 leads</div>
+            <div class="channel-spend">$0.7K</div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">Facebook Ads</div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:20%;background:var(--teal)"></div></div>
+            <div class="channel-val">14 leads</div>
+            <div class="channel-spend">$0.5K</div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">Organic / Direct</div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:11%;background:var(--text3)"></div></div>
+            <div class="channel-val">8 leads</div>
+            <div class="channel-spend">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Leasing Funnel</div>
+          <button class="panel-action">vs. last month</button>
+        </div>
+        <div class="panel-body">
+          <div class="funnel-row">
+            <div class="funnel-label">Impressions</div>
+            <div class="funnel-count">12,400</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Clicks</div>
+            <div class="funnel-count">1,840</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:56%"></div></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Leads</div>
+            <div class="funnel-count">142</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:32%"></div></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Tours</div>
+            <div class="funnel-count">38</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:18%"></div></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Leases</div>
+            <div class="funnel-count">16</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:8%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report history -->
+    <div class="full-col">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Report History</div>
+          <button class="panel-action">Query data</button>
+        </div>
+        <div class="panel-body" style="padding:0 16px;">
+          <div class="report-row">
+            <div>
+              <div class="report-month">June 2025</div>
+              <div class="report-meta">Draft · Generated 2h ago · 7 sections</div>
+            </div>
+            <div class="report-row-actions">
+              <span class="report-badge badge-ready">Draft Ready</span>
+              <button class="btn btn-primary" style="padding:6px 14px;font-size:12px;" onclick="generateReport(null)">Open Editor →</button>
+            </div>
+          </div>
+          <div class="report-row">
+            <div>
+              <div class="report-month">May 2025</div>
+              <div class="report-meta">Published Jun 3 · Sent to owner · 7 sections</div>
+            </div>
+            <div class="report-row-actions">
+              <span class="report-badge badge-ready" style="background:rgba(34,197,94,0.08)">Published</span>
+              <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px;">View</button>
+            </div>
+          </div>
+          <div class="report-row">
+            <div>
+              <div class="report-month">April 2025</div>
+              <div class="report-meta">Published May 2 · Sent to owner · 7 sections</div>
+            </div>
+            <div class="report-row-actions">
+              <span class="report-badge badge-ready" style="background:rgba(34,197,94,0.08)">Published</span>
+              <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px;">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 3: REPORT EDITOR
+════════════════════════════════════ -->
+<div class="screen no-fab" id="screen-editor">
+  <div class="editor-layout">
+
+    <!-- Slide thumbnail rail -->
+    <div class="slide-rail" id="slide-rail">
+      <div class="rail-header">
+        <span>Slides</span>
+        <span class="rail-count" id="rail-count">10</span>
+      </div>
+      <div class="rail-list" id="rail-list"></div>
+    </div>
+
+    <!-- Main slide canvas -->
+    <div class="slide-canvas-wrap">
+      <div class="editor-topbar">
+        <div>
+          <div class="editor-title">June 2025 · Riverside Commons</div>
+          <div class="editor-meta" id="slide-pos-label">Slide 1 of 10</div>
+        </div>
+        <div class="editor-actions">
+          <button class="btn btn-ghost" onclick="goTo('detail')">← Back</button>
+          <button class="btn btn-ghost" id="btn-save">Save Draft</button>
+          <button class="btn btn-primary" onclick="goTo('preview')">Preview & Publish →</button>
+        </div>
+      </div>
+
+      <div class="diff-banner" id="diff-banner">
+        <div class="diff-dot"></div>
+        <div><strong>3 slides changed</strong> vs. May 2025. Highlighted in the thumbnail rail.</div>
+      </div>
+
+      <!-- Slide viewport -->
+      <div class="slide-viewport" id="slide-viewport">
+        <!-- injected by JS -->
+      </div>
+
+      <!-- Slide nav -->
+      <div class="slide-nav">
+        <button class="slide-nav-btn" id="btn-prev" onclick="prevSlide()">← Prev</button>
+        <span class="slide-nav-indicator" id="slide-nav-label">1 / 10</span>
+        <button class="slide-nav-btn" id="btn-next" onclick="nextSlide()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Agent sidebar -->
+    <div class="editor-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          Agent
+          <span class="ai-badge">AI</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3)">Report editor</div>
+      </div>
+      <div class="chat-messages" id="editor-chat">
+        <div class="chat-msg">
+          <div class="msg-from">Agent</div>
+          <div class="msg-bubble msg-ai">I've generated the June draft — 10 slides. 3 slides changed vs. May, shown in the rail. Click any slide to edit text directly, or tell me what to change.</div>
+        </div>
+        <div class="chat-msg">
+          <div class="msg-from">Agent</div>
+          <div class="msg-bubble msg-ai">
+            <div class="suggestion-pills">
+              <button class="suggestion-pill" onclick="triggerSuggestion('tone')">Adjust tone for this owner</button>
+              <button class="suggestion-pill" onclick="triggerSuggestion('slide')">Add slide: vacancy trend</button>
+              <button class="suggestion-pill" onclick="triggerSuggestion('zillow')">Expand Zillow analysis</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" placeholder="Change slide 3 title to…" id="editor-input" rows="1" onkeydown="handleEditorKey(event)"></textarea>
+        <button class="btn-send" onclick="sendEditorMsg()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 5: OWNER PREVIEW
+════════════════════════════════════ -->
+<div class="screen no-fab" id="screen-preview">
+  <div class="preview-layout">
+
+    <!-- Controls sidebar -->
+    <div class="preview-controls">
+      <div class="preview-controls-title">Report Settings</div>
+
+      <div class="control-item">
+        <div class="control-label">Property</div>
+        <input class="control-val" value="Riverside Commons" readonly>
+      </div>
+      <div class="control-item">
+        <div class="control-label">Report Period</div>
+        <input class="control-val" value="June 2025">
+      </div>
+      <div class="control-item">
+        <div class="control-label">Recipient</div>
+        <input class="control-val" value="Greystar Properties">
+      </div>
+      <div class="control-item">
+        <div class="control-label">Sections included</div>
+        <div class="chips">
+          <div class="chip active">Executive Summary</div>
+          <div class="chip active">Occupancy</div>
+          <div class="chip active">Leads & Funnel</div>
+          <div class="chip active">Ad Spend</div>
+          <div class="chip active">Reputation</div>
+          <div class="chip active">Trends</div>
+          <div class="chip active">Recommendations</div>
+        </div>
+      </div>
+      <div class="control-item">
+        <div class="control-label">Tone</div>
+        <div class="chips">
+          <div class="chip active">Professional</div>
+          <div class="chip">Concise</div>
+          <div class="chip">Detailed</div>
+        </div>
+      </div>
+
+      <div class="publish-bar" style="margin-top:20px;padding:0;">
+        <button class="btn btn-ghost" style="width:100%;margin-bottom:8px;" onclick="goTo('editor')">← Back to Editor</button>
+        <button class="btn btn-primary" style="width:100%;" onclick="publishReport()">Publish & Send to Owner</button>
+        <div class="publish-meta" style="margin-top:8px;">Will send via email · PDF attached</div>
+      </div>
+    </div>
+
+    <!-- Owner-facing report -->
+      <div class="owner-report" id="owner-report-deck">
+
+        <!-- Slide nav -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#F1F5F9;border-bottom:1px solid #E2E8F0;">
+          <div style="font-size:11px;color:#64748B;font-weight:500;">Owner Report Preview · <span id="prev-slide-label">Slide 1 of 6</span></div>
+          <div style="display:flex;gap:8px;">
+            <button onclick="prevPreviewSlide()" id="prev-prev-btn" style="padding:4px 12px;background:#fff;border:1px solid #E2E8F0;border-radius:6px;font-size:11px;color:#64748B;cursor:pointer;" disabled>← Prev</button>
+            <button onclick="nextPreviewSlide()" id="prev-next-btn" style="padding:4px 12px;background:#fff;border:1px solid #E2E8F0;border-radius:6px;font-size:11px;color:#64748B;cursor:pointer;">Next →</button>
+          </div>
+        </div>
+
+        <!-- Preview slides container -->
+        <div id="preview-slides-wrap">
+
+          <!-- Preview Slide 1: Cover -->
+          <div class="preview-slide active" id="pslide-0">
+            <div style="background:linear-gradient(135deg,#0C1A3A 0%,#1E3A6E 100%);padding:52px 48px 44px;color:#fff;min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;">
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Portfolio Marketing Report · Cushman &amp; Wakefield</div>
+              <div style="font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px;">Riverside Commons</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:36px;">June 2025 · Prepared for Greystar Properties</div>
+              <div style="display:flex;gap:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.12);">
+                <div><div style="font-size:32px;font-weight:800;color:#22C55E;font-family:'DM Mono',monospace;">94.2%</div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px;">OCCUPANCY</div></div>
+                <div><div style="font-size:32px;font-weight:800;font-family:'DM Mono',monospace;">142</div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px;">LEADS</div></div>
+                <div><div style="font-size:32px;font-weight:800;color:#4F8EF7;font-family:'DM Mono',monospace;">11.3%</div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px;">LEAD→LEASE</div></div>
+                <div><div style="font-size:32px;font-weight:800;font-family:'DM Mono',monospace;">$4.2K</div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px;">AD SPEND</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Slide 2: Executive Summary -->
+          <div class="preview-slide" id="pslide-1">
+            <div style="padding:36px 44px;background:#fff;min-height:380px;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#64748B;border-bottom:2px solid #E2E8F0;padding-bottom:10px;margin-bottom:20px;">Executive Summary</div>
+              <p style="font-size:14px;color:#1E293B;line-height:1.8;margin-bottom:16px;">Riverside Commons delivered a strong performance in June 2025. Occupancy reached <strong>94.2%</strong>, up 1.8 points from May — our strongest month this year. Lead volume grew 18% month-over-month, driven by Zillow (58 leads) and Google Ads (38 leads).</p>
+              <p style="font-size:14px;color:#1E293B;line-height:1.8;margin-bottom:20px;">Lead-to-lease conversion improved to <strong>11.3%</strong>, above the portfolio average of 8.3%. The property is trending positively across all key metrics heading into Q3.</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;">
+                <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;text-align:center;">
+                  <div style="font-size:22px;font-weight:800;color:#15803D;font-family:'DM Mono',monospace;">↑ 1.8pts</div>
+                  <div style="font-size:10px;color:#166534;margin-top:4px;font-weight:600;">Occupancy vs May</div>
+                </div>
+                <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:14px 16px;text-align:center;">
+                  <div style="font-size:22px;font-weight:800;color:#1D4ED8;font-family:'DM Mono',monospace;">↑ 18%</div>
+                  <div style="font-size:10px;color:#1E40AF;margin-top:4px;font-weight:600;">Lead Volume vs May</div>
+                </div>
+                <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;text-align:center;">
+                  <div style="font-size:22px;font-weight:800;color:#15803D;font-family:'DM Mono',monospace;">↑ 0.9pts</div>
+                  <div style="font-size:10px;color:#166534;margin-top:4px;font-weight:600;">Lead→Lease vs May</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Slide 3: KPIs -->
+          <div class="preview-slide" id="pslide-2">
+            <div style="padding:36px 44px;background:#fff;min-height:380px;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#64748B;border-bottom:2px solid #E2E8F0;padding-bottom:10px;margin-bottom:20px;">Key Performance Indicators — June 2025</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                ${[
+                  {l:'Occupancy Rate',v:'94.2%',c:'↑ 1.8% vs May',up:true},
+                  {l:'Vacant Units',v:'13',c:'↓ 4 units vs May',up:true},
+                  {l:'Total Leads',v:'142',c:'↑ 18% vs May',up:true},
+                  {l:'Lead→Lease Conv.',v:'11.3%',c:'↑ 0.9pts vs May',up:true},
+                  {l:'Total Ad Spend',v:'$4,200',c:'On budget',up:null},
+                  {l:'Reputation Score',v:'4.6 / 5',c:'↑ 0.2 vs May',up:true},
+                ].map(k=>`<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+                  <div style="font-size:10px;color:#64748B;margin-bottom:5px;">${k.l}</div>
+                  <div style="font-size:22px;font-weight:800;color:#0F172A;font-family:'DM Mono',monospace;">${k.v}</div>
+                  <div style="font-size:11px;margin-top:4px;color:${k.up===true?'#16A34A':k.up===false?'#DC2626':'#64748B'}">${k.c}</div>
+                </div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Slide 4: Channel Performance -->
+          <div class="preview-slide" id="pslide-3">
+            <div style="padding:36px 44px;background:#fff;min-height:380px;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#64748B;border-bottom:2px solid #E2E8F0;padding-bottom:10px;margin-bottom:20px;">Channel Performance — Ad Spend &amp; Attribution</div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead><tr style="background:#F8FAFC;">
+                  <th style="padding:10px 12px;text-align:left;font-size:11px;color:#64748B;font-weight:600;border-bottom:1px solid #E2E8F0;">Channel</th>
+                  <th style="padding:10px 12px;text-align:right;font-size:11px;color:#64748B;font-weight:600;border-bottom:1px solid #E2E8F0;">Leads</th>
+                  <th style="padding:10px 12px;text-align:right;font-size:11px;color:#64748B;font-weight:600;border-bottom:1px solid #E2E8F0;">Spend</th>
+                  <th style="padding:10px 12px;text-align:right;font-size:11px;color:#64748B;font-weight:600;border-bottom:1px solid #E2E8F0;">Cost / Lead</th>
+                  <th style="padding:10px 12px;text-align:right;font-size:11px;color:#64748B;font-weight:600;border-bottom:1px solid #E2E8F0;">Leases</th>
+                </tr></thead>
+                <tbody>
+                  ${[['Zillow','58','$1,200','$21','7'],['Google Ads','38','$1,800','$47','4'],['Apartments.com','24','$700','$29','3'],['Facebook Ads','14','$500','$36','2'],['Organic / Direct','8','—','—','0']]
+                    .map((r,i)=>`<tr style="background:${i%2?'#F8FAFC':'#fff'}"><td style="padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9;font-weight:${i===0?'600':'400'}">${r[0]}</td>${r.slice(1).map(c=>`<td style="padding:10px 12px;text-align:right;color:#334155;border-bottom:1px solid #F1F5F9;font-family:'DM Mono',monospace;font-size:12px;">${c}</td>`).join('')}</tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Preview Slide 5: Occupancy Trend -->
+          <div class="preview-slide" id="pslide-4">
+            <div style="padding:36px 44px;background:#fff;min-height:380px;display:flex;flex-direction:column;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#64748B;border-bottom:2px solid #E2E8F0;padding-bottom:10px;margin-bottom:24px;">Occupancy Trend — 4 Month View</div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:14px;justify-content:center;">
+                ${[['March 2025','89.4%',89,'#94A3B8'],['April 2025','91.2%',91,'#94A3B8'],['May 2025','92.4%',92,'#94A3B8'],['June 2025','94.2%',94,'#22C55E']]
+                  .map(([m,v,p,c])=>`<div style="display:flex;align-items:center;gap:12px;">
+                    <div style="font-size:12px;color:#64748B;width:90px;flex-shrink:0;">${m}</div>
+                    <div style="flex:1;background:#F1F5F9;border-radius:4px;height:28px;overflow:hidden;position:relative;">
+                      <div style="width:${p}%;height:100%;background:${c};border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;">
+                        <span style="font-size:12px;font-weight:700;color:${c==='#22C55E'?'#fff':'#475569'};font-family:'DM Mono',monospace;">${v}</span>
+                      </div>
+                    </div>
+                  </div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Slide 6: Recommendations -->
+          <div class="preview-slide" id="pslide-5">
+            <div style="padding:36px 44px;background:#fff;min-height:380px;display:flex;flex-direction:column;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#64748B;border-bottom:2px solid #E2E8F0;padding-bottom:10px;margin-bottom:20px;">Recommendations — Next 30 Days</div>
+              <div style="display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center;">
+                ${[
+                  ['Increase Zillow budget by 15%','Lowest cost-per-lease at $171, highest volume. Current allocation underweights it vs. performance.'],
+                  ['Review tour-to-lease conversion','42% vs. 51% portfolio benchmark. Recommend follow-up cadence review with leasing team.'],
+                  ['Reassess 3 long-vacant units','3 units exceeding 30 days vacant. Consider pricing adjustment or concession strategy for Q3.'],
+                ].map(([h,b],i)=>`<div style="display:flex;gap:14px;padding:14px 16px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;">
+                  <div style="width:24px;height:24px;border-radius:50%;background:#1D4ED8;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</div>
+                  <div><div style="font-size:13px;font-weight:700;color:#1E3A8A;margin-bottom:4px;">${h}</div><div style="font-size:12px;color:#1E40AF;line-height:1.5;">${b}</div></div>
+                </div>`).join('')}
+              </div>
+              <div style="margin-top:16px;font-size:10px;color:#94A3B8;text-align:center;">AI Generated · Confidence: High · Reviewed and approved by Marketing Manager</div>
+            </div>
+          </div>
+
+        </div><!-- /preview-slides-wrap -->
+      </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENT BACKDROP + MODAL -->
+<div id="agent-backdrop" onclick="closeAgent()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:198"></div>
+<div class="agent-modal" id="agent-overlay">
+  <div class="agent-modal-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4F8EF7,#A78BFA);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+      <div><div style="font-size:14px;font-weight:600;color:#0F172A">Portfolio Agent</div><div style="font-size:11px;color:#64748B;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#22C55E;display:inline-block"></span>Online</div></div>
+    </div>
+    <button onclick="closeAgent()" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:22px;line-height:1;padding:4px">x</button>
+  </div>
+  <div class="agent-modal-msgs" id="agent-msgs">
+    <div class="agent-msg-row agent-row-ai"><div class="agent-bubble agent-bubble-ai">Hi. I can act across your full portfolio. What do you need?</div></div>
+    <div class="agent-msg-row agent-row-ai"><div class="agent-bubble agent-bubble-ai"><div class="agent-suggestions">
+      <button class="agent-sugg" onclick="bulkSuggestion('generate')">Generate all June drafts</button>
+      <button class="agent-sugg" onclick="bulkSuggestion('tone')">Apply Riverside tone to all properties</button>
+      <button class="agent-sugg" onclick="bulkSuggestion('status')">Which properties need attention?</button>
+      <button class="agent-sugg" onclick="bulkSuggestion('missing')">Fix Northgate Flats missing data</button>
+    </div></div></div>
+  </div>
+  <div class="agent-modal-input">
+    <div class="agent-input-wrap">
+      <input class="agent-modal-input-field" id="agent-input" placeholder="Ask or instruct the agent..." onkeydown="handleAgentKey(event)">
+      <button class="agent-send-btn" onclick="sendAgentMsg()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+    </div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="openAgent()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><circle cx="9" cy="10" r="1" fill="white"></circle><circle cx="12" cy="10" r="1" fill="white"></circle><circle cx="15" cy="10" r="1" fill="white"></circle></svg></button>
+
+<div id="gen-overlay" style="display:none;position:fixed;inset:0;background:rgba(12,15,26,.92);z-index:500;flex-direction:column;align-items:center;justify-content:center">
+  <div style="width:480px;background:#131929;border:1px solid #26344F;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)">
+    <div style="padding:28px 32px 20px"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4F8EF7;margin-bottom:12px">Generating Report</div><div style="font-size:20px;font-weight:700;color:#E8EDF5;margin-bottom:4px" id="gen-property-name">Riverside Commons</div><div style="font-size:13px;color:#8A9BB8">June 2025</div></div>
+    <div style="padding:0 32px 20px;display:flex;flex-direction:column;gap:14px">
+      <div class="gen-step" id="gstep-1"><div class="gen-step-icon pending" id="gicon-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="gen-step-label">Connecting to data sources</div><div class="gen-step-sub">Zillow, Google Ads, MLS, CRM, Reputation tools</div></div></div>
+      <div class="gen-step" id="gstep-2" style="opacity:.3"><div class="gen-step-icon pending" id="gicon-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div class="gen-step-label">Building Knowledge Fabric context</div><div class="gen-step-sub">Comparing vs. May 2025, loading benchmarks</div></div></div>
+      <div class="gen-step" id="gstep-3" style="opacity:.3"><div class="gen-step-icon pending" id="gicon-3"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="gen-step-label">Composing slides</div><div class="gen-step-sub">Applying standing rules, generating recommendations</div></div></div>
+      <div class="gen-step" id="gstep-4" style="opacity:.3"><div class="gen-step-icon pending" id="gicon-4"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="gen-step-label">Draft ready</div><div class="gen-step-sub">11 slides, 3 changes vs. May</div></div></div>
+    </div>
+    <div style="padding:0 32px 24px"><div style="background:#0C0F1A;border-radius:8px;height:6px;overflow:hidden"><div id="gen-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#4F8EF7,#A78BFA);border-radius:8px;transition:width .4s ease"></div></div><div style="display:flex;justify-content:space-between;margin-top:8px"><div style="font-size:11px;color:#556078" id="gen-status-text">Initializing...</div><div style="font-size:11px;color:#4F8EF7;font-family:monospace" id="gen-pct">0%</div></div></div>
+  </div>
+</div>
+
+<div id="query-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:298" onclick="closeQueryModal()"></div>
+<div id="query-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:560px;background:#fff;border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.3);z-index:299;overflow:hidden">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between"><div style="font-size:14px;font-weight:600;color:#0F172A">Query Report Data</div><button onclick="closeQueryModal()" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:20px">x</button></div>
+  <div style="padding:20px">
+    <div style="font-size:12px;color:#64748B;margin-bottom:8px">Ask a question about this property across all reports and sources.</div>
+    <input id="query-input" placeholder="e.g. What drove the lead increase in June?" onkeydown="if(event.key==='Enter')runQuery()" style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1E293B;font-family:Inter,sans-serif;margin-bottom:10px">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <button onclick="setQuery('What drove the lead increase in June?')" style="font-size:11px;padding:4px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;cursor:pointer;color:#334155;font-family:Inter,sans-serif">What drove the lead increase?</button>
+      <button onclick="setQuery('Compare Zillow vs Google Ads ROI over 3 months')" style="font-size:11px;padding:4px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;cursor:pointer;color:#334155;font-family:Inter,sans-serif">Zillow vs Google Ads ROI</button>
+      <button onclick="setQuery('Which units have been vacant the longest?')" style="font-size:11px;padding:4px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;cursor:pointer;color:#334155;font-family:Inter,sans-serif">Longest vacant units</button>
+    </div>
+    <button onclick="runQuery()" style="padding:8px 16px;background:#4F8EF7;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;margin-bottom:12px">Ask</button>
+    <div id="query-result" style="display:none;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;font-size:13px;color:#334155;line-height:1.7;min-height:80px"></div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#22C55E;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(34,197,94,.4);transition:transform .3s;z-index:300;pointer-events:none">Report published and sent to Greystar Properties</div>
+
+<script>
+const screens={dash:'screen-dash',detail:'screen-detail',editor:'screen-editor',preview:'screen-preview'};
+const breadcrumbPaths={dash:[],detail:[{l:'Dashboard',t:'dash'}],editor:[{l:'Dashboard',t:'dash'},{l:'Riverside Commons',t:'detail'}],preview:[{l:'Dashboard',t:'dash'},{l:'Riverside Commons',t:'detail'},{l:'June Draft',t:'editor'}]};
+const screenNames={dash:'Dashboard',detail:'Riverside Commons',editor:'June 2025 Draft',preview:'Owner Preview'};
+let current='dash';
+function goTo(screen){document.getElementById(screens[current]).classList.remove('active');document.getElementById(screens[screen]).classList.add('active');current=screen;updateBreadcrumb();if(screen==='editor')setTimeout(initEditor,50);if(screen==='detail')buildSparkline();}
+function updateBreadcrumb(){const bc=document.getElementById('breadcrumb');let html='';breadcrumbPaths[current].forEach(c=>{html+=`<span onclick="goTo('${c.t}')">${c.l}</span><span class="sep"> &rsaquo; </span>`;});html+=`<span class="active">${screenNames[current]}</span>`;bc.innerHTML=html;}
+function filterPill(el){document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+function buildSparkline(){const el=document.getElementById('trend-spark');if(!el)return;const vals=[68,72,75,79,82,87,89,92,94];el.innerHTML=vals.map((v,i)=>`<div style="flex:1;border-radius:3px 3px 0 0;min-height:4px;height:${v}%;background:${i===vals.length-1?'var(--green)':'var(--accent)'};opacity:${i===vals.length-1?1:0.5+i*0.05}"></div>`).join('');}
+function generateReport(btn){const row=btn?btn.closest('tr'):null;const propName=row&&row.querySelector('.prop-name')?row.querySelector('.prop-name').textContent:'Riverside Commons';showGenOverlay(propName,function(){goTo('editor');});}
+function showGenOverlay(propName,callback){const overlay=document.getElementById('gen-overlay');overlay.style.display='flex';document.getElementById('gen-property-name').textContent=propName;const steps=[{id:1,label:'Pulling data from 15 sources...',pct:25},{id:2,label:'Building context from prior reports...',pct:55},{id:3,label:'Generating 11 slides...',pct:85},{id:4,label:'Draft ready - 3 changes vs. May',pct:100}];let i=0;function runStep(){if(i>=steps.length){setTimeout(()=>{overlay.style.display='none';resetGenOverlay();if(callback)callback();},700);return;}const st=steps[i];if(i>0){const prev=document.getElementById('gicon-'+steps[i-1].id);prev.className='gen-step-icon done';prev.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';}const stepEl=document.getElementById('gstep-'+st.id);if(stepEl)stepEl.style.opacity='1';document.getElementById('gicon-'+st.id).className='gen-step-icon running';document.getElementById('gen-status-text').textContent=st.label;document.getElementById('gen-pct').textContent=st.pct+'%';document.getElementById('gen-progress-bar').style.width=st.pct+'%';i++;setTimeout(runStep,i===3?900:700);}runStep();}
+function resetGenOverlay(){for(let n=1;n<=4;n++){const icon=document.getElementById('gicon-'+n);if(icon)icon.className='gen-step-icon pending';const step=document.getElementById('gstep-'+n);if(step)step.style.opacity=n===1?'1':'0.3';}document.getElementById('gen-progress-bar').style.width='0%';document.getElementById('gen-pct').textContent='0%';document.getElementById('gen-status-text').textContent='Initializing...';}
+const SLIDES=[{id:1,type:'cover',changed:false,aiAdded:false,title:'Riverside Commons',sub:'June 2025 Monthly Marketing Report - Prepared for Greystar Properties',stats:[{val:'94.2%',label:'Occupancy'},{val:'142',label:'Leads Generated'},{val:'11.3%',label:'Lead to Lease'}]},{id:2,type:'kpi',changed:true,aiAdded:false,title:'Performance Summary - June 2025',kpis:[{label:'Occupancy',val:'94.2%',change:'up 1.8% vs May',dir:'up'},{label:'Vacant Units',val:'13',change:'down 4 vs May',dir:'up'},{label:'Total Leads',val:'142',change:'up 18% vs May',dir:'up'},{label:'Lead to Lease',val:'11.3%',change:'up 0.9pts vs May',dir:'up'},{label:'Ad Spend',val:'$4,200',change:'On budget',dir:'flat'},{label:'Reputation',val:'4.6 / 5',change:'up 0.2 vs May',dir:'up'}]},{id:3,type:'text',changed:true,aiAdded:false,title:'Executive Summary',body:'Riverside Commons delivered a strong June, with occupancy reaching 94.2% - up from 92.4% in May. Lead volume grew by 18% month-over-month, driven primarily by Zillow and Google Ads. Lead-to-lease conversion improved to 11.3%, above the portfolio average of 8.3%.
+
+The property is trending positively across all key metrics heading into Q3.'},{id:4,type:'kpi',changed:false,aiAdded:false,title:'Occupancy and Vacancy',kpis:[{label:'Units Occupied',val:'227',change:'up 4 vs May',dir:'up'},{label:'Vacant Units',val:'13',change:'down 4 vs May',dir:'up'},{label:'Occupancy Rate',val:'94.2%',change:'up 1.8pts',dir:'up'},{label:'Avg Days Vacant',val:'18',change:'down 3 days',dir:'up'},{label:'Units over 30 Days',val:'3',change:'Flag for review',dir:'down'},{label:'Total Units',val:'240',change:'No change',dir:'flat'}]},{id:5,type:'bars',changed:false,aiAdded:false,title:'Leasing Funnel - June 2025',bars:[{label:'Impressions',val:'12,400',pct:100,color:'#4F8EF7'},{label:'Clicks',val:'1,840',pct:56,color:'#4F8EF7'},{label:'Leads',val:'142',pct:32,color:'#4F8EF7'},{label:'Tours Booked',val:'38',pct:18,color:'#A78BFA'},{label:'Leases Signed',val:'16',pct:8,color:'#22C55E'}]},{id:6,type:'table',changed:false,aiAdded:false,title:'Channel Performance - Ad Spend and Attribution',tableHeaders:['Channel','Leads','Spend','Cost / Lead','Leases'],tableRows:[['Zillow','58','$1,200','$21','7'],['Google Ads','38','$1,800','$47','4'],['Apartments.com','24','$700','$29','3'],['Facebook Ads','14','$500','$36','2'],['Organic','8','-','-','0']]},{id:7,type:'bars',changed:false,aiAdded:false,title:'Channel Lead Volume',bars:[{label:'Zillow',val:'58 leads',pct:100,color:'#4F8EF7'},{label:'Google Ads',val:'38 leads',pct:66,color:'#A78BFA'},{label:'Apartments.com',val:'24 leads',pct:41,color:'#14B8A6'},{label:'Facebook Ads',val:'14 leads',pct:24,color:'#F59E0B'},{label:'Organic',val:'8 leads',pct:14,color:'#94A3B8'}]},{id:8,type:'kpi',changed:false,aiAdded:false,title:'Reputation - June 2025',kpis:[{label:'Overall Score',val:'4.6 / 5',change:'up 0.2 vs May',dir:'up'},{label:'Google',val:'4.7',change:'12 reviews',dir:'up'},{label:'Yelp',val:'4.4',change:'5 reviews',dir:'flat'},{label:'ApartmentList',val:'4.5',change:'8 reviews',dir:'up'},{label:'New Reviews',val:'8',change:'7 positive',dir:'up'},{label:'Response Rate',val:'100%',change:'Within 24h',dir:'up'}]},{id:9,type:'missing',changed:false,aiAdded:false,title:'SmartDA - Reputation and Market Detail',missingSource:'SmartDA',missingReason:'Session expired June 28. Re-authentication required.',available:['Google Reviews: 4.7 avg, 12 reviews','Yelp: 4.4 avg, 5 reviews','ApartmentList: 4.5 avg, 8 reviews'],pending:['SmartDA competitor comparison','SmartDA market position index']},{id:10,type:'bars',changed:true,aiAdded:false,title:'Occupancy Trend - 4 Month View',bars:[{label:'March 2025',val:'89.4%',pct:89,color:'#94A3B8'},{label:'April 2025',val:'91.2%',pct:91,color:'#94A3B8'},{label:'May 2025',val:'92.4%',pct:92,color:'#94A3B8'},{label:'June 2025',val:'94.2%',pct:94,color:'#22C55E'}]},{id:11,type:'recs',changed:false,aiAdded:true,title:'Recommendations - Next 30 Days',recs:['Increase Zillow budget allocation by 15% - lowest cost-per-lease at $171, highest volume channel.','Investigate tour-to-lease conversion (42% vs 51% portfolio benchmark) - recommend follow-up cadence review.','Flag 3 units exceeding 30 days vacant for pricing reassessment. Consider Q3 concession strategy.']}];
+let currentSlide=0;
+function buildSlideRail(){const list=document.getElementById('rail-list');list.innerHTML='';document.getElementById('rail-count').textContent=SLIDES.length;SLIDES.forEach((s,i)=>{const div=document.createElement('div');div.className='rail-thumb'+(i===0?' active':'')+(s.changed?' changed':'')+(s.aiAdded?' ai-added':'');if(s.type==='missing')div.style.borderColor='rgba(245,158,11,.5)';div.id='thumb-'+i;div.onclick=()=>goToSlide(i);let inner='<div class="thumb-title-bar"></div><div class="thumb-body-bar w90"></div><div class="thumb-body-bar w70"></div>';if(s.type==='bars'||s.type==='kpi'||s.type==='table')inner+='<div class="thumb-chart">'+[40,60,75,55,85,65].map(h=>`<div class="thumb-bar" style="height:${h}%"></div>`).join('')+'</div>';let tag=s.changed?'<span class="rail-thumb-tag rtag-changed">Changed</span>':s.aiAdded?'<span class="rail-thumb-tag rtag-ai">AI</span>':s.type==='missing'?'<span class="rail-thumb-tag rtag-changed">Data</span>':'';div.innerHTML=`<div class="rail-thumb-inner">${inner}</div><div class="rail-thumb-label"><span class="rail-thumb-num">${String(i+1).padStart(2,'0')}</span>${tag}</div>`;list.appendChild(div);});}
+function renderSlide(idx){const s=SLIDES[idx];const vp=document.getElementById('slide-viewport');let html='';if(s.type==='cover'){html=`<div class="pptx-slide slide-cover"><div class="s-eyebrow" contenteditable="true">Portfolio Marketing Report</div><div class="s-title" contenteditable="true">${s.title}</div><div class="s-sub" contenteditable="true">${s.sub}</div><div class="s-stats">${s.stats.map(st=>`<div><div class="s-stat-val" contenteditable="true">${st.val}</div><div class="s-stat-label" contenteditable="true">${st.label}</div></div>`).join('')}</div><div class="slide-edit-hint">Click any text to edit</div></div>`;}else if(s.type==='kpi'){const badge=s.changed?'<div class="slide-changed-badge">Changed vs May</div>':s.aiAdded?'<div class="slide-ai-badge">AI Generated</div>':'';html=`<div class="pptx-slide">${badge}<div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><div class="s-kpi-row">${s.kpis.slice(0,3).map(k=>`<div class="s-kpi-box"><div class="s-kpi-label" contenteditable="true">${k.label}</div><div class="s-kpi-val" contenteditable="true">${k.val}</div><div class="s-kpi-change s-kpi-${k.dir}" contenteditable="true">${k.change}</div></div>`).join('')}</div><div class="s-kpi-row">${s.kpis.slice(3).map(k=>`<div class="s-kpi-box"><div class="s-kpi-label" contenteditable="true">${k.label}</div><div class="s-kpi-val" contenteditable="true">${k.val}</div><div class="s-kpi-change s-kpi-${k.dir}" contenteditable="true">${k.change}</div></div>`).join('')}</div></div><div class="slide-edit-hint">Click any text to edit</div></div>`;}else if(s.type==='text'){const badge=s.changed?'<div class="slide-changed-badge">Changed vs May</div>':'';html=`<div class="pptx-slide">${badge}<div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><div class="s-body" contenteditable="true" style="white-space:pre-line">${s.body}</div></div><div class="slide-edit-hint">Click any text to edit</div></div>`;}else if(s.type==='bars'){const badge=s.changed?'<div class="slide-changed-badge">Changed vs May</div>':'';html=`<div class="pptx-slide">${badge}<div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><div class="s-bar-chart">${s.bars.map(b=>`<div class="s-bar-row"><div class="s-bar-lbl" contenteditable="true">${b.label}</div><div class="s-bar-wrap"><div class="s-bar" style="width:${b.pct}%;background:${b.color}"></div></div><div class="s-bar-val" contenteditable="true">${b.val}</div></div>`).join('')}</div></div><div class="slide-edit-hint">Click any text to edit</div></div>`;}else if(s.type==='table'){html=`<div class="pptx-slide"><div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><table class="s-table"><thead><tr>${s.tableHeaders.map(h=>`<th contenteditable="true">${h}</th>`).join('')}</tr></thead><tbody>${s.tableRows.map(row=>`<tr>${row.map(cell=>`<td contenteditable="true">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div><div class="slide-edit-hint">Click any cell to edit</div></div>`;}else if(s.type==='missing'){html=`<div class="pptx-slide"><div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><div style="display:flex;gap:12px;flex:1"><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#16A34A;margin-bottom:2px">Available</div>${s.available.map(a=>`<div style="padding:7px 10px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:5px;font-size:10px;color:#166534">${a}</div>`).join('')}</div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#D97706;margin-bottom:2px">Pending - Missing</div>${s.pending.map(p=>`<div style="padding:7px 10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:5px;font-size:10px;color:#92400E">${p}</div>`).join('')}<div style="padding:10px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:5px;margin-top:4px"><div style="font-size:9px;font-weight:700;color:#C2410C;margin-bottom:3px">Source: ${s.missingSource}</div><div style="font-size:9px;color:#9A3412">${s.missingReason}</div><button onclick="event.stopPropagation();appendEditorMsg('Agent','Re-authenticating SmartDA. Data available in ~30 seconds.','ai')" style="margin-top:7px;padding:3px 9px;background:#EA580C;color:#fff;border:none;border-radius:4px;font-size:9px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Re-authenticate</button></div></div></div></div></div>`;}else if(s.type==='recs'){html=`<div class="pptx-slide"><div class="slide-ai-badge">AI Generated</div><div class="slide-content"><div class="s-slide-title" contenteditable="true">${s.title}</div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px">${s.recs.map((r,i)=>`<div class="s-rec-item"><span class="s-rec-num">${i+1}.</span><span contenteditable="true">${r}</span></div>`).join('')}</div><div style="font-size:8px;color:#94A3B8;margin-top:6px">AI Generated - Confidence: High</div></div></div>`;}
+vp.innerHTML=html;document.getElementById('slide-nav-label').textContent=`${idx+1} / ${SLIDES.length}`;document.getElementById('slide-pos-label').textContent=`Slide ${idx+1} of ${SLIDES.length}`;document.getElementById('btn-prev').disabled=idx===0;document.getElementById('btn-next').disabled=idx===SLIDES.length-1;document.querySelectorAll('.rail-thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));const at=document.getElementById('thumb-'+idx);if(at)at.scrollIntoView({block:'nearest'});}
+function goToSlide(idx){currentSlide=idx;renderSlide(idx);}
+function prevSlide(){if(currentSlide>0)goToSlide(currentSlide-1);}
+function nextSlide(){if(currentSlide<SLIDES.length-1)goToSlide(currentSlide+1);}
+function initEditor(){buildSlideRail();renderSlide(0);}
+function handleEditorKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendEditorMsg();}}
+function sendEditorMsg(){const input=document.getElementById('editor-input');const val=input.value.trim();if(!val)return;appendEditorMsg('You',val,'user');input.value='';showTyping('editor-chat');setTimeout(()=>{removeTyping('editor-chat');handleEditorResponse(val);},1400);}
+function triggerSuggestion(type){const msgs={tone:'Adjust tone - make it warmer and more positive for this owner.',slide:'Add a slide showing the vacancy trend over the last 4 months.',zillow:'Expand the Zillow analysis with cost-per-lead trend data.'};document.getElementById('editor-input').value=msgs[type];sendEditorMsg();}
+function appendEditorMsg(from,text,type){const c=document.getElementById('editor-chat');const div=document.createElement('div');div.className='chat-msg';div.innerHTML=`<div class="msg-from">${from}</div><div class="msg-bubble msg-${type}" style="white-space:pre-line">${text}</div>`;c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function appendActionCard(containerId,title,preview,scope){const c=document.getElementById(containerId);const div=document.createElement('div');div.className='chat-msg';div.innerHTML=`<div class="msg-from">Agent</div><div class="msg-action-card"><div class="msg-action-title">${title}</div><div class="msg-action-preview">${preview}</div><div class="msg-action-btns"><button class="btn-approve" onclick="approveAction(this,'${scope}')">Approve</button><button class="btn-reject" onclick="rejectAction(this)">Adjust</button></div></div>`;c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function showTyping(id){const c=document.getElementById(id);const div=document.createElement('div');div.className='chat-msg typing-wrap';div.innerHTML='<div class="msg-from">Agent</div><div class="typing"><span></span><span></span><span></span></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function removeTyping(id){document.getElementById(id)?.querySelector('.typing-wrap')?.remove();}
+function handleEditorResponse(msg){const m=msg.toLowerCase();if(m.includes('tone')||m.includes('warm')){appendActionCard('editor-chat','Rewrite Executive Summary - Warmer Tone',"I'll rewrite slide 3 with a more positive tone. Data stays identical.
+
+Preview: 'June was a standout month for Riverside Commons - occupancy climbed to 94.2%...'","tone");}else if((m.includes('slide')||m.includes('add'))&&(m.includes('vacanc')||m.includes('trend'))){appendActionCard('editor-chat','Add Slide: Vacancy Trend',"I'll insert a vacancy trend chart after slide 4. Deck expands to 12 slides.","addslide");}else if(m.includes('zillow')){appendActionCard('editor-chat','Expand Zillow Analysis',"I'll add a cost-per-lead trend column to the channel table: Zillow improved from $28 to $21 over 3 months.","zillow");}else{appendActionCard('editor-chat','Apply Change',`"${msg.slice(0,60)}..." - I'll apply this to the relevant slide. Confirm to proceed.`,"generic");}}
+function approveAction(btn,scope){const card=btn.closest('.msg-action-card');card.querySelector('.msg-action-btns').innerHTML='<span style="font-size:11px;color:var(--green);font-weight:600">Approved - applying now</span>';setTimeout(()=>{if(scope==='tone'){SLIDES[2].body='June was a standout month for Riverside Commons - occupancy climbed to 94.2%, our strongest performance this year. Lead volume surged 18%, and our lead-to-lease conversion of 11.3% puts us well above the portfolio average.
+
+Heading into Q3, the property is firing on all cylinders.';if(currentSlide===2)renderSlide(2);appendEditorMsg('Agent','Done. Slide 3 rewritten with warmer tone. Review in the canvas.','ai');}else if(scope==='addslide'){SLIDES.splice(4,0,{id:4.5,type:'bars',changed:false,aiAdded:true,title:'Vacancy Trend - March to June 2025',bars:[{label:'March',val:'22',pct:100,color:'#94A3B8'},{label:'April',val:'19',pct:86,color:'#94A3B8'},{label:'May',val:'17',pct:77,color:'#94A3B8'},{label:'June',val:'13',pct:59,color:'#22C55E'}]});buildSlideRail();renderSlide(currentSlide);appendEditorMsg('Agent',`New slide added. Deck is now ${SLIDES.length} slides.`,'ai');}else if(scope==='zillow'){SLIDES[5].tableHeaders=['Channel','Leads','Spend','Cost/Lead','Trend','Leases'];SLIDES[5].tableRows=[['Zillow','58','$1,200','$21','down $28 to $21','7'],['Google Ads','38','$1,800','$47','stable','4'],['Apartments.com','24','$700','$29','stable','3'],['Facebook Ads','14','$500','$36','improving','2'],['Organic','8','-','-','-','0']];if(currentSlide===5)renderSlide(5);appendEditorMsg('Agent','Slide 6 updated with Zillow trend data.','ai');}else{appendEditorMsg('Agent','Change applied.','ai');}},700);}
+function rejectAction(btn){btn.closest('.msg-action-card').querySelector('.msg-action-btns').innerHTML='<span style="font-size:11px;color:var(--text3)">Cancelled.</span>';}
+function openAgent(){document.getElementById('agent-overlay').classList.add('open');document.getElementById('agent-backdrop').style.display='block';document.getElementById('agent-input').focus();}
+function closeAgent(){document.getElementById('agent-overlay').classList.remove('open');document.getElementById('agent-backdrop').style.display='none';}
+function handleAgentKey(e){if(e.key==='Enter'){e.preventDefault();sendAgentMsg();}}
+function sendAgentMsg(){const input=document.getElementById('agent-input');const val=input.value.trim();if(!val)return;appendAgentMsg('You',val,'user');input.value='';showAgentTyping();setTimeout(()=>{removeAgentTyping();handleAgentResponse(val);},1400);}
+function bulkSuggestion(type){const msgs={generate:'Generate June reports for all properties with complete data.',tone:'Apply Riverside Commons tone to all future reports.',status:'Which properties need my attention most urgently?',missing:'What is causing the missing data on Northgate Flats?'};document.getElementById('agent-input').value=msgs[type];sendAgentMsg();}
+function handleAgentResponse(msg){const m=msg.toLowerCase();if(m.includes('generate')||m.includes('draft')){appendAgentActionCard('Generate June Drafts - 36 Properties','36 properties have complete data ready.
+4 properties with missing data will be skipped.
+
+Estimated time: ~3 minutes for all 36 drafts.');}else if(m.includes('tone')||m.includes('riverside')){appendAgentActionCard('Apply Riverside Commons Tone to All Properties','I will use the Riverside Commons template as the standing template for all 40 properties. Overridable per property at any time.');}else if(m.includes('attention')||m.includes('status')){appendAgentMsg('AGENT','Northgate Flats - Zillow session expired, leads and funnel data missing
+The Aldridge - occupancy at 87.8%, below 90% threshold
+Park Row East - lead-to-lease conversion down 2.1pts month-over-month
+
+Want me to address any of these?','ai');}else if(m.includes('missing')||m.includes('northgate')){appendAgentActionCard('Re-authenticate Zillow - Northgate Flats','The Northgate Flats Zillow session expired on Jun 28. I can re-initiate using vaulted credentials.
+
+Once reconnected, I will pull missing data and regenerate the draft automatically.');}else{appendAgentActionCard('Proposed Action',`Based on: "${msg.slice(0,70)}..."
+
+Here is what I will do. Confirm to proceed.`);}}
+function appendAgentMsg(from,text,type){const c=document.getElementById('agent-msgs');const div=document.createElement('div');div.className=`agent-msg-row agent-row-${type==='user'?'user':'ai'}`;div.innerHTML=`<div class="agent-bubble agent-bubble-${type==='user'?'user':'ai'}" style="white-space:pre-line">${text}</div>`;c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function appendAgentActionCard(title,preview){const c=document.getElementById('agent-msgs');const div=document.createElement('div');div.className='agent-msg-row agent-row-ai';div.innerHTML=`<div class="agent-bubble-action"><div class="action-bubble-header">Proposed Action</div><div class="action-bubble-body">${preview}</div><div class="action-bubble-footer"><button class="btn-approve-white" onclick="approveAgentAction(this,'${title}')">Approve</button><button class="btn-adjust-white" onclick="adjustAgentAction(this)">Adjust</button></div></div>`;c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function approveAgentAction(btn,title){btn.closest('.action-bubble-footer').innerHTML='<span style="font-size:12px;color:#16A34A;font-weight:600">Approved - applying now</span>';setTimeout(()=>appendAgentMsg('AGENT',`Done. "${title}" is being applied.`,'ai'),800);}
+function adjustAgentAction(btn){btn.closest('.action-bubble-footer').innerHTML='<span style="font-size:12px;color:#94A3B8">Cancelled.</span>';}
+function showAgentTyping(){const c=document.getElementById('agent-msgs');const div=document.createElement('div');div.className='agent-msg-row agent-row-ai agent-typing-wrap';div.innerHTML='<div class="agent-typing"><span></span><span></span><span></span></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function removeAgentTyping(){document.getElementById('agent-msgs')?.querySelector('.agent-typing-wrap')?.remove();}
+let currentPreviewSlide=0;
+const TOTAL_PREVIEW=6;
+function nextPreviewSlide(){if(currentPreviewSlide<TOTAL_PREVIEW-1){document.getElementById('pslide-'+currentPreviewSlide).classList.remove('active');currentPreviewSlide++;document.getElementById('pslide-'+currentPreviewSlide).classList.add('active');updatePreviewNav();}}
+function prevPreviewSlide(){if(currentPreviewSlide>0){document.getElementById('pslide-'+currentPreviewSlide).classList.remove('active');currentPreviewSlide--;document.getElementById('pslide-'+currentPreviewSlide).classList.add('active');updatePreviewNav();}}
+function updatePreviewNav(){document.getElementById('prev-slide-label').textContent=`Slide ${currentPreviewSlide+1} of ${TOTAL_PREVIEW}`;document.getElementById('prev-prev-btn').disabled=currentPreviewSlide===0;document.getElementById('prev-next-btn').disabled=currentPreviewSlide===TOTAL_PREVIEW-1;}
+function openQueryModal(){document.getElementById('query-modal').style.display='block';document.getElementById('query-backdrop').style.display='block';document.getElementById('query-input').focus();}
+function closeQueryModal(){document.getElementById('query-modal').style.display='none';document.getElementById('query-backdrop').style.display='none';}
+function setQuery(q){document.getElementById('query-input').value=q;}
+function runQuery(){const q=document.getElementById('query-input').value.trim();if(!q)return;const result=document.getElementById('query-result');result.style.display='block';result.textContent='Querying...';const m=q.toLowerCase();setTimeout(()=>{if(m.includes('lead')&&m.includes('june'))result.innerHTML='Lead volume increased from <strong>120 in May to 142 in June (+18%)</strong>. Primary drivers: Zillow budget increased by $200 (+4 leads), Google Ads CTR improved from 11.2% to 13.8% (+8 leads).';else if(m.includes('zillow')&&m.includes('google'))result.innerHTML='<strong>Zillow:</strong> Cost-per-lease: $201 to $185 to $171. Improving consistently.<br><br><strong>Google Ads:</strong> Cost-per-lease: $312 to $298 to $280. 64% more expensive than Zillow. Recommend rebalancing toward Zillow.';else if(m.includes('vacant'))result.innerHTML='<strong>3 units over 30 days:</strong><br>Unit 2B: 34 days. Priced $1,450/mo.<br>Unit 5F: 38 days. Above market avg at $1,620/mo.<br>Unit 7A: 41 days. Maintenance outstanding.';else result.innerHTML=`Query result for: <strong>${q}</strong><br><br>Data sourced from Zillow, Google Ads, MLS, CRM, and reputation platforms.`;},900);}
+function publishReport(){const toast=document.getElementById('toast');toast.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>{toast.style.transform='translateX(-50%) translateY(80px)';},3500);}
+updateBreadcrumb();
+</script>
+</body>
+</html>
