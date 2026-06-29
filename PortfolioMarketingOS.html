@@ -264,7 +264,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .gen-sub{font-size:11px;color:#556078}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#22C55E;color:#fff;padding:11px 22px;border-radius:9px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(34,197,94,.4);transition:transform .3s;z-index:400;pointer-events:none;white-space:nowrap}
 /* ── BULK SELECT ── */
-.cb-cell{width:32px;padding-left:12px!important}
+.tt{cursor:default}
 .row-cb{width:14px;height:14px;cursor:pointer;accent-color:var(--accent)}
 .bulk-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:150;transition:transform .2s ease;white-space:nowrap}
 .bulk-bar.visible{transform:translateX(-50%) translateY(0)}
@@ -317,7 +317,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
   <div class="scroll-area">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
       <div>
-        <div style="font-size:20px;font-weight:700;letter-spacing:-.3px">Portfolio Reports <span style="font-size:14px;font-weight:500;color:var(--text3);letter-spacing:0">— June 2025</span></div>
+        <div style="font-size:20px;font-weight:700;letter-spacing:-.3px">Portfolio Reports <span style="font-size:14px;font-weight:500;color:var(--text3);letter-spacing:0">— June 2026</span></div>
         <div style="font-size:12px;color:var(--text3);margin-top:3px" id="dash-subtitle">Loading…</div>
         <div style="font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:6px">
           <span style="background:rgba(79,142,247,.1);color:var(--accent);font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;border:1px solid rgba(79,142,247,.2)">5 hrs → 20 min</span>
@@ -326,6 +326,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn btn-ghost" onclick="exportDashboardCSV()" title="Export table as CSV">&#8659; Export CSV</button>
+        <button class="btn btn-ghost" onclick="showToast('Import flow coming soon \u2014 upload CSV or connect data source')" title="Import existing asset reports">&#8593; Import Reports</button>
+        <button class="btn btn-ghost" onclick="showToast('Add asset flow coming soon \u2014 enter property details to onboard')" title="Add a new asset">+ Add Asset</button>
         <button class="btn btn-ghost" onclick="openAgent()">Portfolio Agent</button>
         <button class="btn btn-green" id="send-approved-btn" onclick="sendAllApproved()">Send Approved &rarr;</button>
       </div>
@@ -335,8 +337,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div id="cycle-complete-banner" style="display:none;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);border-radius:10px;padding:14px 20px;margin-bottom:20px;align-items:center;gap:14px">
       <div style="width:32px;height:32px;border-radius:50%;background:rgba(20,184,166,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">✓</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:700;color:var(--teal)">June 2025 cycle complete</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px" id="cycle-complete-sub">All reports sent to owners. Next cycle generates Aug 1.</div>
+        <div style="font-size:14px;font-weight:700;color:var(--teal)">June 2026 cycle complete</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px" id="cycle-complete-sub">All reports sent to owners. Next cycle generates Aug 1, 2026.</div>
       </div>
       <button onclick="document.getElementById('cycle-complete-banner').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px">&times;</button>
     </div>
@@ -431,7 +433,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="slide-canvas-wrap">
       <div class="editor-topbar">
         <div>
-          <div class="editor-title" id="editor-title">June 2025 &middot; Riverside Commons</div>
+          <div class="editor-title" id="editor-title">June 2026 &middot; Riverside Commons</div>
           <div class="editor-meta" id="slide-pos-label">Slide 1 of 11 &middot; <span style="color:var(--yellow)">3 changes vs May</span></div>
         </div>
         <div class="editor-actions">
@@ -483,13 +485,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
           <span style="font-size:10px;color:var(--text3)">Slide <span id="source-slide-num">1</span></span>
         </div>
         <div style="flex:1;overflow-y:auto" id="source-panel-body">
-          <div class="source-entry"><div class="source-field">Occupancy Rate &mdash; 94.2%</div><div class="source-val">Yardi Voyager</div><div class="source-meta">Pulled Jun 1, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Vacant Units &mdash; 13</div><div class="source-val">Yardi Voyager</div><div class="source-meta">Pulled Jun 1, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Total Leads &mdash; 142</div><div class="source-val">MLS + CRM</div><div class="source-meta">Pulled Jun 2, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Lead&rarr;Lease &mdash; 11.3%</div><div class="source-val">Salesforce CRM</div><div class="source-meta">Pulled Jun 2, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Ad Spend &mdash; $4,200</div><div class="source-val">Google Ads + Zillow API</div><div class="source-meta">Pulled Jun 1, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Reputation &mdash; 4.6/5</div><div class="source-val">Google + Yelp (aggregated)</div><div class="source-meta">Pulled Jun 3, 2025 &middot; Validated &check;</div></div>
-          <div class="source-entry"><div class="source-field">Channel Performance</div><div class="source-val">Zillow, Google Ads, Apartments.com, Facebook</div><div class="source-meta">Pulled Jun 1, 2025 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Occupancy Rate &mdash; 94.2%</div><div class="source-val">Yardi Voyager</div><div class="source-meta">Pulled Jun 1, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Vacant Units &mdash; 13</div><div class="source-val">Yardi Voyager</div><div class="source-meta">Pulled Jun 1, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Total Leads &mdash; 142</div><div class="source-val">MLS + CRM</div><div class="source-meta">Pulled Jun 2, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Lead&rarr;Lease &mdash; 11.3%</div><div class="source-val">Salesforce CRM</div><div class="source-meta">Pulled Jun 2, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Ad Spend &mdash; $4,200</div><div class="source-val">Google Ads + Zillow API</div><div class="source-meta">Pulled Jun 1, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Reputation &mdash; 4.6/5</div><div class="source-val">Google + Yelp (aggregated)</div><div class="source-meta">Pulled Jun 3, 2026 &middot; Validated &check;</div></div>
+          <div class="source-entry"><div class="source-field">Channel Performance</div><div class="source-val">Zillow, Google Ads, Apartments.com, Facebook</div><div class="source-meta">Pulled Jun 1, 2026 &middot; Validated &check;</div></div>
           <div style="padding:12px 14px;font-size:11px;color:var(--text3)">Hover any KPI in the report to see its source. Click to open this panel.</div>
         </div>
       </div>
@@ -546,7 +548,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="preview-controls">
       <div class="preview-controls-title">Send Report</div>
       <div class="control-item"><div class="control-label">Property</div><input class="control-val" id="preview-prop" value="Riverside Commons" readonly></div>
-      <div class="control-item"><div class="control-label">Period</div><input class="control-val" value="June 2025" readonly></div>
+      <div class="control-item"><div class="control-label">Period</div><input class="control-val" value="June 2026" readonly></div>
       <div class="control-item"><div class="control-label">Owner</div><div id="preview-owner-label" style="font-size:12px;font-weight:600;color:var(--text);padding:4px 0">Greystar Properties</div></div>
       <div class="control-item">
         <div class="recip-section-label">To</div>
@@ -605,7 +607,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="compare-pane">
       <div class="compare-pane-header">
         <div>
-          <div class="compare-pane-label">June 2025 <span style="background:rgba(79,142,247,.1);color:var(--accent);font-size:9px;padding:1px 6px;border-radius:3px;margin-left:5px;font-weight:600">CURRENT</span></div>
+          <div class="compare-pane-label">June 2026 <span style="background:rgba(79,142,247,.1);color:var(--accent);font-size:9px;padding:1px 6px;border-radius:3px;margin-left:5px;font-weight:600">CURRENT</span></div>
           <div style="font-size:10px;color:var(--text3);margin-top:2px">Draft — editing in progress</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
@@ -621,20 +623,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="compare-pane">
       <div class="compare-pane-header">
         <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:0">
-          <div class="compare-pane-label">Compare to: <span id="past-selected-label" style="color:var(--text)">May 2025</span> <span class="past-sent-tag" style="margin-left:4px">Sent</span></div>
+          <div class="compare-pane-label">Compare to: <span id="past-selected-label" style="color:var(--text)">May 2026</span> <span class="past-sent-tag" style="margin-left:4px">Sent</span></div>
           <div class="month-picker-wrap" id="month-picker-wrap">
-            <button class="past-month-btn active" onclick="selectPastMonth(this,'May 2025')">May 2025</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'April 2025')">Apr 2025</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'March 2025')">Mar 2025</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'February 2025')">Feb 2025</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'January 2025')">Jan 2025</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'December 2024')">Dec 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'November 2024')">Nov 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'October 2024')">Oct 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'September 2024')">Sep 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'August 2024')">Aug 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'July 2024')">Jul 2024</button>
-            <button class="past-month-btn" onclick="selectPastMonth(this,'June 2024')">Jun 2024</button>
+            <button class="past-month-btn active" onclick="selectPastMonth(this,'May 2026')">May 2026</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'April 2026')">Apr 2026</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'March 2026')">Mar 2026</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'February 2026')">Feb 2026</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'January 2026')">Jan 2026</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'December 2025')">Dec 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'November 2025')">Nov 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'October 2025')">Oct 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'September 2025')">Sep 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'August 2025')">Aug 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'July 2025')">Jul 2025</button>
+            <button class="past-month-btn" onclick="selectPastMonth(this,'June 2025')">Jun 2025</button>
           </div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:10px">
@@ -683,6 +685,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
   <div id="sdp-body"></div>
 </div>
 
+<!-- GLOBAL TOOLTIP -->
+<div id="g-tip" style="position:fixed;z-index:9999;background:#1E293B;color:#F1F5F9;font-size:10px;font-family:'Inter',sans-serif;padding:5px 10px;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.5);pointer-events:none;display:none;line-height:1.6;max-width:340px;white-space:normal"></div>
+
 <!-- FAB -->
 <button class="fab" id="fab-btn" onclick="openAgent()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><circle cx="9" cy="10" r="1" fill="white"></circle><circle cx="12" cy="10" r="1" fill="white"></circle><circle cx="15" cy="10" r="1" fill="white"></circle></svg></button>
 
@@ -692,7 +697,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div style="padding:26px 30px 18px">
       <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4F8EF7;margin-bottom:10px">Generating Report</div>
       <div style="font-size:19px;font-weight:700;color:#E8EDF5;margin-bottom:3px" id="gen-prop">Riverside Commons</div>
-      <div style="font-size:12px;color:#8A9BB8">June 2025</div>
+      <div style="font-size:12px;color:#8A9BB8">June 2026</div>
     </div>
     <div style="padding:0 30px 18px;display:flex;flex-direction:column;gap:12px">
       <div class="gen-step" id="gstep-1"><div class="gen-icon pending" id="gicon-1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="gen-label">Pulling from 15+ sources</div><div class="gen-sub">Yardi &middot; MLS &middot; CRM &middot; Zillow &middot; Google Ads &middot; Reputation</div></div></div>
@@ -737,8 +742,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 <div id="toast">Report sent</div>
 <script>
 var screens={dash:'screen-dash',editor:'screen-editor',detail:'screen-detail',preview:'screen-preview'};
-var crumbs={dash:[],editor:[{l:'Dashboard',t:'dash'}],detail:[{l:'Dashboard',t:'dash'},{l:'June 2025 Draft',t:'editor-back'}],preview:[{l:'Dashboard',t:'dash'},{l:'June 2025 Draft',t:'editor'}]};
-var screenNames={dash:'Dashboard',editor:'June 2025 Draft',detail:'Source Data',preview:'Preview & Send'};
+var crumbs={dash:[],editor:[{l:'Dashboard',t:'dash'}],detail:[{l:'Dashboard',t:'dash'},{l:'June 2026 Draft',t:'editor-back'}],preview:[{l:'Dashboard',t:'dash'},{l:'June 2026 Draft',t:'editor'}]};
+var screenNames={dash:'Dashboard',editor:'June 2026 Draft',detail:'Source Data',preview:'Preview & Send'};
 var current='dash';
 
 function goTo(s){
@@ -916,21 +921,58 @@ function rowHTML(a){
   var rowC='prop-row'+(isBlocked?' urgent-row':(a.occ<89&&!isBlocked&&!isSent?' flagged-row':(isInReview?' inreview-row':'')));
   var rowClick=(isBlocked||isSent)?'':' onclick="openEditor(\''+n+'\',\''+c+'\')"';
   var rowCur=(isBlocked||isSent)?' style="cursor:default"':'';
+
+  // Pull MoM delta data from PROP_DATA if available for named assets
+  var pd=PROP_DATA[a.name];
+  var occTip=pd?('May 2026: '+pd.occPrev+'  ·  Change: '+pd.occChg+'  ·  Source: Yardi Voyager'):('Threshold: ≥93% healthy  ·  '+(a.occ>=93?'Above target':'Below target'));
+  var vacTip=pd?('May 2026: '+pd.vacPrev+' units  ·  Change: '+pd.vacChg+'  ·  Source: Yardi'):('Of '+a.units+' total units  ·  Vacancy rate: '+((a.vac/a.units*100).toFixed(1))+'%');
+  var leadsTip=pd?('May 2026: '+pd.leadsPrev+'  ·  Change: '+pd.leadsChg+'  ·  Source: MLS + Salesforce CRM'):('Top channel: '+(a.ch||'—')+'  ·  Source: MLS + CRM');
+  var l2lTip=pd?('May 2026: '+pd.l2lPrev+'  ·  Change: '+pd.l2lChg+'  ·  Portfolio avg: 8.3%  ·  Source: Salesforce'):('Portfolio avg: 8.3%  ·  '+(a.l2l>=10?'Above avg':'Below avg')+'  ·  Source: Salesforce');
+  var repTip=pd?('May 2026: '+pd.rep+'  ·  Change: '+pd.repChg+'  ·  Source: Google + Yelp (aggregated)'):((a.rep>=4.5?'Strong':'Needs attention')+'  ·  Source: Google + Yelp');
+  var trendTip=(a.trend&&a.trend!=='flat')?(a.trend[0]==='+'?'Improving — occupancy gaining momentum':'Declining — watch for further drops'):'Holding steady — no directional signal';
+
   return '<tr class="'+rowC+'" data-status="'+a.status+'"'+rowClick+rowCur+'>'
     +'<td class="cb-cell" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" data-name="'+escQ(a.name)+'" '+(isSent||isBlocked?'disabled':'onclick="toggleRowCb(this,\''+escQ(a.name)+'\')"')+'></td>'
     +'<td><div class="status-dot '+dotC+'"></div></td>'
     +'<td><div class="prop-name">'+a.name+'</div><div class="prop-addr">'+a.city+' &middot; '+a.units+' units</div></td>'
     +'<td style="font-size:11px;color:var(--text2);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.owner+'</td>'
-    +'<td><span class="metric-chip '+occC+'">'+a.occ+'%</span></td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.vac+' units')+'</td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.leads)+'</td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.l2l+'%')+'</td>'
-    +'<td>'+repH+'</td>'
-    +'<td>'+trendH+'</td>'
+    +'<td><span class="metric-chip '+occC+' tt" data-tip="'+occTip+'">'+a.occ+'%</span></td>'
+    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+vacTip+'">'+a.vac+' units</span>')+'</td>'
+    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+leadsTip+'">'+a.leads+'</span>')+'</td>'
+    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+l2lTip+'">'+a.l2l+'%</span>')+'</td>'
+    +'<td><span class="tt" data-tip="'+(isBlocked?'Data unavailable — source connection blocked':repTip)+'">'+repH+'</span></td>'
+    +'<td><span class="tt" data-tip="'+trendTip+'">'+trendH+'</span></td>'
     +'<td><span class="rbadge '+bC+'">'+bT+'</span></td>'
     +'<td class="row-actions" onclick="event.stopPropagation()">'+actH+'</td>'
     +'</tr>';
 }
+// ── GLOBAL TOOLTIP ENGINE (no position:relative on cells — uses fixed div) ──
+(function(){
+  var tip=document.getElementById('g-tip');
+  if(!tip)return;
+  var cur=null;
+  document.addEventListener('mouseover',function(e){
+    var el=e.target.closest('[data-tip]');
+    if(!el||el===cur)return;
+    cur=el;
+    tip.textContent=el.getAttribute('data-tip');
+    tip.style.display='block';
+    positionTip(e);
+  });
+  document.addEventListener('mousemove',function(e){if(cur)positionTip(e);});
+  document.addEventListener('mouseout',function(e){
+    var el=e.target.closest('[data-tip]');
+    if(el&&!el.contains(e.relatedTarget)){cur=null;tip.style.display='none';}
+  });
+  function positionTip(e){
+    var x=e.clientX,y=e.clientY,tw=tip.offsetWidth,th=tip.offsetHeight;
+    var left=x+14,top=y-th-10;
+    if(left+tw>window.innerWidth-10)left=x-tw-14;
+    if(top<6)top=y+20;
+    tip.style.left=left+'px';tip.style.top=top+'px';
+  }
+})();
+
 function escQ(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 
 function updateStatCounts(){
@@ -952,7 +994,7 @@ function updateStatCounts(){
     if(counts.pending>0)parts.push(counts.pending+' ready to review');
     if(counts.sent>0)parts.push(counts.sent+' sent');
     if(counts.blocked>0)parts.push(counts.blocked+' need attention');
-    sub.textContent='June 2025 · '+parts.join(' · ');
+    sub.textContent='June 2026 · '+parts.join(' · ');
   }
   // Cycle complete check: all non-blocked are sent
   var actionable=ALL_ASSETS.filter(function(a){return a.status!=='blocked';});
@@ -962,7 +1004,7 @@ function updateStatCounts(){
     banner.style.display=allSent?'flex':'none';
     if(allSent){
       var sub2=document.getElementById('cycle-complete-sub');
-      if(sub2)sub2.textContent=counts.sent+' reports delivered to owners. '+counts.blocked+' blocked assets excluded. Next cycle generates Aug 1.';
+      if(sub2)sub2.textContent=counts.sent+' reports delivered to owners. '+counts.blocked+' blocked assets excluded. Next cycle generates Aug 1, 2026.';
     }
   }
 }
@@ -1039,7 +1081,7 @@ function exportReport(){
         +'<div class="cover-title">'+s.title+'</div><div class="cover-sub">'+s.sub+'</div>'
         +'<div class="stats-row">'+s.stats.map(function(st){return '<div class="stat"><div class="stat-val">'+st.val+'</div><div class="stat-lbl">'+st.label+'</div></div>';}).join('')+'</div></div>';
     } else if(s.type==='summary'){
-      content+='<div class="section-title">'+s.prop+' — June 2025 · KPI Overview</div>'
+      content+='<div class="section-title">'+s.prop+' — June 2026 · KPI Overview</div>'
         +'<div class="kpi-grid">'+s.kpis.map(function(k){
           var col=k.dir==='up'?'#16A34A':(k.dir==='down'?'#DC2626':'#64748B');
           return '<div class="kpi"><div class="kpi-lbl">'+k.label+'</div><div class="kpi-val">'+k.val+'</div><div class="kpi-chg" style="color:'+col+'">'+k.chg+'</div></div>';
@@ -1069,7 +1111,7 @@ function exportReport(){
   }).join('');
 
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    +'<title>'+currentPropName+' — June 2025 Report</title>'
+    +'<title>'+currentPropName+' — June 2026 Report</title>'
     +'<style>'
     +'*{margin:0;padding:0;box-sizing:border-box}'
     +'body{font-family:Inter,Arial,sans-serif;color:#1E293B;background:#F8FAFC;padding:32px}'
@@ -1274,7 +1316,7 @@ function buildSlidesForProperty(name){
     // Slide 1: Cover — dark navy, property name, key stats (matches the design)
     {id:1,type:'cover',changed:false,
       title:name,
-      sub:'June 2025 Monthly Marketing Report \u2014 Prepared for '+p.owner,
+      sub:'June 2026 Monthly Marketing Report \u2014 Prepared for '+p.owner,
       stats:[
         {val:p.occ,  label:'Occupancy'},
         {val:p.vac+'', label:'Vacant Units'},
@@ -1300,7 +1342,7 @@ function buildSlidesForProperty(name){
     // Slide 2: Executive narrative
     {id:2,type:'text',changed:true,
       title:'Executive Summary',
-      body:name+' — June 2025.\n\nOccupancy '+p.occ+' ('+p.occChg+'). Lead volume '+p.leadsChg+'. Lead-to-lease at '+p.l2l+'. Ad spend '+p.spend+'.\n\nReputation score '+p.rep+'/5 ('+p.repChg+').',
+      body:name+' — June 2026.\n\nOccupancy '+p.occ+' ('+p.occChg+'). Lead volume '+p.leadsChg+'. Lead-to-lease at '+p.l2l+'. Ad spend '+p.spend+'.\n\nReputation score '+p.rep+'/5 ('+p.repChg+').',
       diffNote:'Narrative refreshed vs May — key figures updated',
       diffItems:[
         {
@@ -1325,7 +1367,7 @@ function buildSlidesForProperty(name){
       ]
     },
     // Slide 4: Channel performance bars
-    {id:4,type:'bars',changed:false,title:'Channel Performance — June 2025',
+    {id:4,type:'bars',changed:false,title:'Channel Performance — June 2026',
       bars:[
         {label:p.topCh,val:p.leads+' leads (top)',pct:82,color:'#4F8EF7'},
         {label:'Google Ads',val:'38 leads',pct:54,color:'#F59E0B'},
@@ -1355,7 +1397,7 @@ function buildSlidesForProperty(name){
       ]
     },
     // Slide 6: Leasing funnel
-    {id:6,type:'kpi',changed:false,title:'Leasing Funnel — June 2025',
+    {id:6,type:'kpi',changed:false,title:'Leasing Funnel — June 2026',
       kpis:[
         {label:'Impressions',val:'12,400',change:'All channels',dir:'flat',src:'Ad Platforms'},
         {label:'Clicks',val:'1,840',change:'14.8% CTR',dir:'up',src:'Ad Platforms'},
@@ -1366,7 +1408,7 @@ function buildSlidesForProperty(name){
       ]
     },
     // Slide 7: Reputation
-    {id:7,type:'kpi',changed:false,title:'Reputation — June 2025',
+    {id:7,type:'kpi',changed:false,title:'Reputation — June 2026',
       kpis:[
         {label:'Overall Rating',val:p.rep+'/5',change:p.repChg,dir:p.repChg.indexOf('-')>=0?'down':'up',src:'Aggregated · Jun 3'},
         {label:'Google Reviews',val:(parseFloat(p.rep)+0.1).toFixed(1),change:'184 total',dir:'up',src:'Google · Jun 3'},
@@ -1377,20 +1419,20 @@ function buildSlidesForProperty(name){
       ]
     },
     // Slide 8: MoM occupancy trend
-    {id:8,type:'bars',changed:false,title:'Occupancy Trend — Mar–Jun 2025',
+    {id:8,type:'bars',changed:false,title:'Occupancy Trend — Mar–Jun 2026',
       bars:[
-        {label:'March 2025',val:'91.5%',pct:72,color:'#94A3B8'},
-        {label:'April 2025',val:'92.0%',pct:74,color:'#94A3B8'},
-        {label:'May 2025',val:p.occPrev,pct:78,color:'#94A3B8'},
-        {label:'June 2025',val:p.occ,pct:p.occDir==='up'?90:(p.occDir==='down'?65:78),color:p.occDir==='up'?'#22C55E':'#EF4444'}
+        {label:'March 2026',val:'91.5%',pct:72,color:'#94A3B8'},
+        {label:'April 2026',val:'92.0%',pct:74,color:'#94A3B8'},
+        {label:'May 2026',val:p.occPrev,pct:78,color:'#94A3B8'},
+        {label:'June 2026',val:p.occ,pct:p.occDir==='up'?90:(p.occDir==='down'?65:78),color:p.occDir==='up'?'#22C55E':'#EF4444'}
       ]
     },
     // Slide 9: Next steps
     {id:9,type:'text',changed:false,title:'Next Steps & Owner Notes',
-      body:'1. PM review complete — draft sent to owner by Jun 5\n2. Budget decisions pending owner sign-off\n3. Next report: July 2025 (auto-generates Aug 1)\n\nQuestions? Contact your Cushman & Wakefield portfolio manager.'
+      body:'1. PM review complete — draft sent to owner by Jun 5, 2026\n2. Budget decisions pending owner sign-off\n3. Next report: July 2026 (auto-generates Aug 1, 2026)\n\nQuestions? Contact your Cushman & Wakefield portfolio manager.'
     },
     // Slide 10: Recommendations (changed — AI updated recs this cycle)
-    {id:10,type:'recs',changed:true,title:'Recommendations — June 2025',
+    {id:10,type:'recs',changed:true,title:'Recommendations — June 2026',
       recs:p.recs,
       note:'Based on 3-month rolling benchmarks · Austin multifamily comps · Confidence level noted per recommendation',
       diffItems:[
@@ -1460,12 +1502,12 @@ function renderSlide(idx){
     html='<div class="pptx-slide" style="background:#fff">'
       +'<div class="slide-content" style="padding:18px 22px;gap:10px">'
       +'<div style="display:flex;align-items:baseline;justify-content:space-between;padding-bottom:9px;border-bottom:2px solid #E2E8F0;margin-bottom:2px">'
-      +'<div style="font-size:15px;font-weight:700;color:#0F172A" contenteditable="true">'+s.prop+' — June 2025</div>'
+      +'<div style="font-size:15px;font-weight:700;color:#0F172A" contenteditable="true">'+s.prop+' — June 2026</div>'
       +'<div style="font-size:10px;color:#94A3B8;flex-shrink:0">'+s.addr+' &middot; '+s.units+' units &middot; '+s.owner+'</div>'
       +'</div>'
       +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">'+row1+'</div>'
       +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">'+row2+'</div>'
-      +'<div style="font-size:8px;color:#94A3B8;padding-top:6px;border-top:1px solid #F1F5F9">Data as of Jun 3, 2025 &middot; Sources: Yardi Voyager, MLS, Salesforce CRM, Zillow, Google Ads, Apartments.com, Google Reviews, Yelp &middot; Prepared by Cushman &amp; Wakefield</div>'
+      +'<div style="font-size:8px;color:#94A3B8;padding-top:6px;border-top:1px solid #F1F5F9">Data as of Jun 3, 2026 &middot; Sources: Yardi Voyager, MLS, Salesforce CRM, Zillow, Google Ads, Apartments.com, Google Reviews, Yelp &middot; Prepared by Cushman &amp; Wakefield</div>'
       +'</div></div>';
   } else if(s.type==='cover'){
     html='<div class="pptx-slide slide-cover"><div class="s-eyebrow">Cushman &amp; Wakefield &middot; Portfolio Marketing Report</div><div class="s-title" contenteditable="true">'+s.title+'</div><div class="s-sub" contenteditable="true">'+s.sub+'</div><div class="s-stats">'+s.stats.map(function(st){return '<div><div class="s-stat-val">'+st.val+'</div><div class="s-stat-label">'+st.label+'</div></div>';}).join('')+'</div></div>';
@@ -1555,7 +1597,7 @@ function buildDiffPanel(){
   var typeBadge={rec:'dtb-rec',narrative:'dtb-narrative',structure:'dtb-structure'};
 
   var html='<div style="padding:4px 0 12px">'
-    +'<div style="font-size:12px;font-weight:700;color:var(--text)">AI judgment changes <span style="font-weight:400;color:var(--text3)">— '+allItems.length+' this cycle vs May 2025</span></div>'
+    +'<div style="font-size:12px;font-weight:700;color:var(--text)">AI judgment changes <span style="font-weight:400;color:var(--text3)">— '+allItems.length+' this cycle vs May 2026</span></div>'
     +'<div style="font-size:11px;color:var(--text3);margin-top:3px">Data refreshes aren\'t listed — every number updated. These are the decisions that changed.</div>'
     +'</div>';
 
@@ -1575,8 +1617,8 @@ function buildDiffPanel(){
           +'<span class="diff-type-badge '+typeBadge[item.type||'structure']+'">'+typeLabel[item.type||'structure']+'</span>'
         +'</div>'
         +'<div class="diff-comparison">'
-          +'<div class="diff-col diff-col-before"><div class="diff-col-label">May 2025</div>'+item.before+'</div>'
-          +'<div class="diff-col diff-col-after"><div class="diff-col-label">June 2025</div>'+item.after+'</div>'
+          +'<div class="diff-col diff-col-before"><div class="diff-col-label">May 2026</div>'+item.before+'</div>'
+          +'<div class="diff-col diff-col-after"><div class="diff-col-label">June 2026</div>'+item.after+'</div>'
         +'</div>'
         +'<div class="diff-reason"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px;opacity:.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(item.why||'')+'</div>'
       +'</div>'
@@ -1650,7 +1692,7 @@ function closeSlidePopover(){
 function initEditor(){
   // Always rebuild slides for the current property so switching assets works correctly
   buildSlidesForProperty(currentPropName);
-  document.getElementById('editor-title').textContent='June 2025 \u00b7 '+currentPropName;
+  document.getElementById('editor-title').textContent='June 2026 \u00b7 '+currentPropName;
   // Count AI judgment changes (diffItems), not just changed slides
   var judgmentCount=0;
   SLIDES.forEach(function(s){if(s.diffItems)judgmentCount+=s.diffItems.length;});
@@ -1715,7 +1757,7 @@ function buildPreview(){
     var inner='';
     if(s.type==='cover'){
       inner='<div style="background:linear-gradient(135deg,#0C1A3A,#1E3A6E);padding:52px 48px 44px;color:#fff;min-height:360px;display:flex;flex-direction:column;justify-content:flex-end">'
-        +'<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px">Portfolio Marketing Report &middot; June 2025</div>'
+        +'<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px">Portfolio Marketing Report &middot; June 2026</div>'
         +'<div style="font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px">'+s.title+'</div>'
         +'<div style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:36px">'+s.sub+'</div>'
         +'<div style="display:flex;gap:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12)">'
@@ -1839,7 +1881,7 @@ function approveEditorAction(btn,scope){
   btn.closest('.msg-action-card').querySelector('.msg-action-btns').innerHTML='<span style="font-size:11px;color:var(--green);font-weight:600">\u2713 Applying...</span>';
   setTimeout(function(){
     if(scope==='tone'){SLIDES[2].body='\u2022 Occupancy: 94.2% (\u2191 1.8pts vs May) \u2014 strongest month this year\n\u2022 Leads: 142 (\u2191 18% vs May) driven by Zillow and Google Ads\n\u2022 Lead\u2192Lease: 11.3% \u2014 above 8.3% portfolio average';if(currentSlide===2)renderSlide(2);appendEditorMsg('Agent','Done. Slide 3 in bullet format. Standing rule saved for Greystar.','ai');}
-    else if(scope==='addslide'){SLIDES.splice(4,0,{id:4.5,type:'bars',changed:false,aiAdded:true,title:'Vacancy Trend \u2014 Mar\u2013Jun 2025',bars:[{label:'March',val:'22 units',pct:100,color:'#94A3B8'},{label:'April',val:'19 units',pct:86,color:'#94A3B8'},{label:'May',val:'17 units',pct:77,color:'#94A3B8'},{label:'June',val:'13 units',pct:59,color:'#22C55E'}]});buildRail();renderSlide(currentSlide);appendEditorMsg('Agent','Slide added at position 5. Deck is now '+SLIDES.length+' slides.','ai');}
+    else if(scope==='addslide'){SLIDES.splice(4,0,{id:4.5,type:'bars',changed:false,aiAdded:true,title:'Vacancy Trend \u2014 Mar\u2013Jun 2026',bars:[{label:'March',val:'22 units',pct:100,color:'#94A3B8'},{label:'April',val:'19 units',pct:86,color:'#94A3B8'},{label:'May',val:'17 units',pct:77,color:'#94A3B8'},{label:'June',val:'13 units',pct:59,color:'#22C55E'}]});buildRail();renderSlide(currentSlide);appendEditorMsg('Agent','Slide added at position 5. Deck is now '+SLIDES.length+' slides.','ai');}
     else if(scope==='zillow'){SLIDES[5].headers=['Channel','Leads','Spend','Cost/Lead','3-Mo Trend','Leases'];SLIDES[5].rows=[['Zillow','58','$1,200','$21','\u2193 $28\u2192$21','7'],['Google Ads','38','$1,800','$47','stable','4'],['Apartments.com','24','$700','$29','stable','3'],['Facebook','14','$500','$36','improving','2'],['Organic','8','\u2014','\u2014','\u2014','0']];if(currentSlide===5)renderSlide(5);appendEditorMsg('Agent','Channel table updated with Zillow CPL trend.','ai');}
     else appendEditorMsg('Agent','Change applied.','ai');
   },600);
@@ -1851,9 +1893,9 @@ function rejectEditorAction(btn){btn.closest('.msg-action-card').querySelector('
 var pastSlideIdx=0;
 var curCompareIdx=0;
 var syncPanes=true;
-var pastOccData={'May 2025':'92.4%','April 2025':'92.0%','March 2025':'91.5%','February 2025':'90.8%','January 2025':'89.2%','December 2024':'88.6%','November 2024':'90.1%','October 2024':'91.3%','September 2024':'93.2%','August 2024':'94.8%','July 2024':'95.1%','June 2024':'93.7%'};
-var pastLeadsData={'May 2025':120,'April 2025':108,'March 2025':114,'February 2025':98,'January 2025':88,'December 2024':76,'November 2024':82,'October 2024':95,'September 2024':102,'August 2024':118,'July 2024':124,'June 2024':116};
-var pastRepData={'May 2025':'4.4','April 2025':'4.3','March 2025':'4.4','February 2025':'4.2','January 2025':'4.1','December 2024':'4.0','November 2024':'4.2','October 2024':'4.3','September 2024':'4.5','August 2024':'4.6','July 2024':'4.7','June 2024':'4.5'};
+var pastOccData={'May 2026':'92.4%','April 2026':'92.0%','March 2026':'91.5%','February 2026':'90.8%','January 2026':'89.2%','December 2025':'88.6%','November 2025':'90.1%','October 2025':'91.3%','September 2025':'93.2%','August 2025':'94.8%','July 2025':'95.1%','June 2026':'93.7%'};
+var pastLeadsData={'May 2026':120,'April 2026':108,'March 2026':114,'February 2026':98,'January 2026':88,'December 2025':76,'November 2025':82,'October 2025':95,'September 2025':102,'August 2025':118,'July 2025':124,'June 2026':116};
+var pastRepData={'May 2026':'4.4','April 2026':'4.3','March 2026':'4.4','February 2026':'4.2','January 2026':'4.1','December 2025':'4.0','November 2025':'4.2','October 2025':'4.3','September 2025':'4.5','August 2025':'4.6','July 2025':'4.7','June 2026':'4.5'};
 
 function openPastReports(){
   document.getElementById('past-modal-title').textContent='Compare Reports \u2014 '+currentPropName;
@@ -1866,8 +1908,8 @@ function openPastReports(){
   var firstBtn=document.querySelector('.past-month-btn');
   document.querySelectorAll('.past-month-btn').forEach(function(b){b.classList.remove('active');});
   if(firstBtn){firstBtn.classList.add('active');}
-  document.getElementById('past-selected-label').textContent='May 2025';
-  renderPastSlide('May 2025');
+  document.getElementById('past-selected-label').textContent='May 2026';
+  renderPastSlide('May 2026');
 }
 function closePastReports(){document.getElementById('past-modal').classList.remove('open');}
 
@@ -2109,7 +2151,7 @@ function publishReport(){
   updateStatCounts();
   var recipCount=toRecipients.length+ccRecipients.length;
   var recipMsg=recipCount===1?toRecipients[0]:recipCount+' recipients';
-  showToast('Sent to '+recipMsg+' \u2014 '+currentPropName+', June 2025');
+  showToast('Sent to '+recipMsg+' \u2014 '+currentPropName+', June 2026');
   setTimeout(function(){goTo('dash');renderTable();setTimeout(showNextBanner,400);},1800);
 }
 function showNextBanner(){
@@ -2142,7 +2184,7 @@ function openAgent(){
     if(counts.approved>0)parts.push(counts.approved+' approved');
     if(counts.sent>0)parts.push(counts.sent+' sent');
     if(counts.blocked>0)parts.push(counts.blocked+' blocked');
-    firstMsg.textContent='June 2025: '+parts.join(', ')+'. What do you need?';
+    firstMsg.textContent='June 2026: '+parts.join(', ')+'. What do you need?';
   }
   document.getElementById('agent-drawer').classList.add('open');
   setTimeout(function(){document.getElementById('agent-input').focus();},300);
