@@ -36,13 +36,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .prop-table tbody td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;white-space:nowrap}
 .prop-row{cursor:pointer;transition:background .12s}.prop-row:hover{background:rgba(79,142,247,.04)}.prop-row:last-child td{border-bottom:none}
 .prop-row.hidden{display:none}
-.flagged-row{background:rgba(245,158,11,.02)}.urgent-row{background:rgba(239,68,68,.02)}.inreview-row{background:rgba(79,142,247,.03)}
+.flagged-row{background:rgba(245,158,11,.02)}.urgent-row{background:rgba(239,68,68,.02)}
 .prop-name{font-size:12px;font-weight:600;color:var(--text)}.prop-addr{font-size:10px;color:var(--text3);margin-top:1px}
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
 .sd-green{background:var(--green)}.sd-yellow{background:var(--yellow)}.sd-red{background:var(--red)}.sd-blue{background:var(--blue)}
 .metric-chip{display:inline-block;font-size:11px;font-weight:600;font-family:var(--mono);padding:2px 6px;border-radius:4px}
 .mc-green{background:rgba(34,197,94,.12);color:var(--green)}.mc-yellow{background:rgba(245,158,11,.12);color:var(--yellow)}.mc-red{background:rgba(239,68,68,.12);color:var(--red)}
-.row-actions{display:flex;gap:5px;justify-content:flex-end;align-items:center}
+.row-actions-inner{display:flex;gap:5px;justify-content:flex-end;align-items:center}
 .rbadge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;white-space:nowrap;display:inline-block}
 .rb-approved{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
 .rb-sent{background:rgba(20,184,166,.12);color:var(--teal);border:1px solid rgba(20,184,166,.3)}
@@ -320,16 +320,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       <div>
         <div style="font-size:20px;font-weight:700;letter-spacing:-.3px">Portfolio Reports <span style="font-size:14px;font-weight:500;color:var(--text3);letter-spacing:0">— June 2026</span></div>
         <div style="font-size:12px;color:var(--text3);margin-top:3px" id="dash-subtitle">Loading…</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:6px">
-          <span style="background:rgba(79,142,247,.1);color:var(--accent);font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;border:1px solid rgba(79,142,247,.2)">5 hrs → 20 min</span>
-          <span>Drafts generated overnight from 15+ sources. Your job: review, not build.</span>
-        </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn btn-ghost" onclick="exportDashboardCSV()" title="Export table as CSV">&#8659; Export CSV</button>
-        <button class="btn btn-ghost" onclick="showToast('Import flow coming soon \u2014 upload CSV or connect data source')" title="Import existing asset reports">&#8593; Import Reports</button>
-        <button class="btn btn-ghost" onclick="showToast('Add asset flow coming soon \u2014 enter property details to onboard')" title="Add a new asset">+ Add Asset</button>
+        <button class="btn btn-ghost" onclick="openImportReports()" title="Import existing asset reports">&#8593; Import Reports</button>
+        <button class="btn btn-ghost" onclick="openAddAsset()" title="Add a new asset">+ Add Asset</button>
         <button class="btn btn-ghost" onclick="openAgent()">Portfolio Agent</button>
+        <button class="btn btn-ghost" onclick="openThresholds()" title="Configure flagging thresholds" style="padding:6px 9px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
         <button class="btn btn-green" id="send-approved-btn" onclick="sendAllApproved()">Send Approved &rarr;</button>
       </div>
     </div>
@@ -574,6 +571,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
           <strong>&#9888; Not yet approved.</strong> You can send directly or approve first.
         </div>
         <button class="btn btn-ghost" style="width:100%;margin-bottom:8px" onclick="goTo('editor-back')">&larr; Back to Editor</button>
+        <button class="btn btn-ghost" style="width:100%;margin-bottom:8px" onclick="downloadReportPdf()">&#8659; Download PDF</button>
         <button class="btn btn-green" style="width:100%;font-size:13px;padding:11px" onclick="publishReport()">Send to Owner &rarr;</button>
         <div style="font-size:10px;color:var(--text3);margin-top:8px;text-align:center">Sends via email &middot; PDF attached &middot; Owner notified</div>
       </div>
@@ -657,8 +655,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div style="display:flex;align-items:center;gap:9px">
       <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
       <div>
-        <div style="font-size:13px;font-weight:600;color:var(--text)">Portfolio Agent <span class="ai-badge" style="font-size:9px">AI</span></div>
-        <div style="font-size:10px;color:var(--text3);margin-top:1px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span>Online &middot; 100 assets</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text)">Agent <span class="ai-badge" style="font-size:9px">AI</span></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:1px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span><span id="agent-scope-label">Portfolio scope · 100 assets</span></div>
       </div>
     </div>
     <button onclick="closeAgent()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:4px">&times;</button>
@@ -704,7 +702,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       <div class="gen-step" id="gstep-1"><div class="gen-icon pending" id="gicon-1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="gen-label">Pulling from 15+ sources</div><div class="gen-sub">Yardi &middot; MLS &middot; CRM &middot; Zillow &middot; Google Ads &middot; Reputation</div></div></div>
       <div class="gen-step" id="gstep-2" style="opacity:.3"><div class="gen-icon pending" id="gicon-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div class="gen-label">Loading Knowledge Fabric</div><div class="gen-sub">Comparing vs May &middot; Benchmarks &middot; Standing rules</div></div></div>
       <div class="gen-step" id="gstep-3" style="opacity:.3"><div class="gen-icon pending" id="gicon-3"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="gen-label">Composing 11 slides</div><div class="gen-sub">Applying Greystar rules &middot; Generating recommendations</div></div></div>
-      <div class="gen-step" id="gstep-4" style="opacity:.3"><div class="gen-icon pending" id="gicon-4"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="gen-label">Draft ready — 5 hrs → 20 min</div><div class="gen-sub">11 slides &middot; 4 AI judgment changes vs May &middot; Ready for review</div></div></div>
+      <div class="gen-step" id="gstep-4" style="opacity:.3"><div class="gen-icon pending" id="gicon-4"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="gen-label">Draft ready</div><div class="gen-sub">11 slides &middot; 4 AI judgment changes vs May &middot; Ready for review</div></div></div>
     </div>
     <div style="padding:0 30px 22px">
       <div style="background:#0C0F1A;border-radius:7px;height:5px;overflow:hidden"><div id="gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#4F8EF7,#A78BFA);border-radius:7px;transition:width .4s ease"></div></div>
@@ -740,9 +738,120 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
   </div>
 </div>
 
+<!-- ADD ASSET MODAL -->
+<div id="add-asset-backdrop" onclick="closeAddAsset()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:298"></div>
+<div id="add-asset-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;background:#fff;border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.3);z-index:299;overflow:hidden;font-family:Inter,sans-serif">
+  <div style="padding:18px 22px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div><div style="font-size:14px;font-weight:700;color:#0F172A">Add Asset</div><div style="font-size:12px;color:#64748B;margin-top:2px">Onboard a new property to the portfolio</div></div>
+    <button onclick="closeAddAsset()" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:22px;line-height:1">&times;</button>
+  </div>
+  <div style="padding:18px 22px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Property name</div><input id="aa-name" placeholder="e.g. Sunset Ridge Apartments" style="width:100%;padding:8px 10px;border:1px solid #E2E8F0;border-radius:7px;font-size:12px;font-family:Inter,sans-serif;box-sizing:border-box"></div>
+      <div><div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Units</div><input id="aa-units" placeholder="e.g. 184" style="width:100%;padding:8px 10px;border:1px solid #E2E8F0;border-radius:7px;font-size:12px;font-family:Inter,sans-serif;box-sizing:border-box"></div>
+    </div>
+    <div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">City, State</div><input id="aa-city" placeholder="e.g. Raleigh, NC" style="width:100%;padding:8px 10px;border:1px solid #E2E8F0;border-radius:7px;font-size:12px;font-family:Inter,sans-serif;box-sizing:border-box"></div>
+    <div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Owner</div>
+      <select id="aa-owner" style="width:100%;padding:8px 10px;border:1px solid #E2E8F0;border-radius:7px;font-size:12px;font-family:Inter,sans-serif;background:#fff">
+        <option>Greystar Properties</option><option>Equity Residential</option><option>AvalonBay Communities</option><option>Lincoln Property Co.</option><option>Camden Property Trust</option><option>+ New owner&hellip;</option>
+      </select>
+    </div>
+    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:11px 13px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:#1D4ED8;margin-bottom:3px">After this asset is added</div>
+      <div style="font-size:11px;color:#1E3A8A;line-height:1.6">Connect data sources (Yardi, MLS, ad platforms) for this property. No report will generate until sources are linked &mdash; this asset will show as <strong>Needs Setup</strong> on the dashboard.</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button id="aa-submit-btn" onclick="submitAddAsset()" style="flex:1;padding:9px;background:#2563EB;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Add Asset</button>
+      <button onclick="closeAddAsset()" style="padding:9px 14px;background:#fff;color:#64748B;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT REPORTS MODAL -->
+<div id="import-backdrop" onclick="closeImportReports()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:298"></div>
+<div id="import-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;background:#fff;border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.3);z-index:299;overflow:hidden;font-family:Inter,sans-serif">
+  <div style="padding:18px 22px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div><div style="font-size:14px;font-weight:700;color:#0F172A">Import Asset Reports</div><div style="font-size:12px;color:#64748B;margin-top:2px">Bring in existing report history for a newly onboarded property</div></div>
+    <button onclick="closeImportReports()" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:22px;line-height:1">&times;</button>
+  </div>
+  <div style="padding:18px 22px">
+    <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:8px">Choose an import method</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <div onclick="selectImportMethod(this,'csv')" class="import-option" style="border:1.5px solid #E2E8F0;border-radius:9px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s">
+        <div style="width:34px;height:34px;border-radius:8px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">📄</div>
+        <div><div style="font-size:12.5px;font-weight:700;color:#0F172A">Upload CSV / Excel</div><div style="font-size:11px;color:#64748B;margin-top:1px">Past report data exported from your previous tool</div></div>
+      </div>
+      <div onclick="selectImportMethod(this,'pdf')" class="import-option" style="border:1.5px solid #E2E8F0;border-radius:9px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s">
+        <div style="width:34px;height:34px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">📎</div>
+        <div><div style="font-size:12.5px;font-weight:700;color:#0F172A">Upload past PDF reports</div><div style="font-size:11px;color:#64748B;margin-top:1px">AI extracts structured data from prior monthly decks</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button id="import-submit-btn" onclick="submitImport()" disabled style="flex:1;padding:9px;background:#94A3B8;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:not-allowed;font-family:Inter,sans-serif">Select a method</button>
+      <button onclick="closeImportReports()" style="padding:9px 14px;background:#fff;color:#64748B;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- THRESHOLDS / SETTINGS MODAL -->
+<div id="thresh-backdrop" onclick="closeThresholds()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:298"></div>
+<div id="thresh-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;background:#fff;border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.3);z-index:299;overflow:hidden;font-family:Inter,sans-serif">
+  <div style="padding:18px 22px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div><div style="font-size:14px;font-weight:700;color:#0F172A">Flagging Thresholds</div><div style="font-size:12px;color:#64748B;margin-top:2px">Controls coloring and "Needs Attention" flags on the dashboard</div></div>
+    <button onclick="closeThresholds()" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:22px;line-height:1">&times;</button>
+  </div>
+  <div style="padding:18px 22px">
+
+    <div style="margin-bottom:18px">
+      <div style="font-size:12px;font-weight:700;color:#0F172A;margin-bottom:3px">Occupancy</div>
+      <div style="font-size:11px;color:#64748B;margin-bottom:10px">Sets the green / amber / red breakpoints on the Occupancy column</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+        <div style="width:60px;font-size:11px;color:#16A34A;font-weight:600">Healthy ≥</div>
+        <input type="range" id="th-occ-healthy" min="80" max="98" value="93" oninput="updateThresholdPreview()" style="flex:1;accent-color:#16A34A">
+        <div style="width:42px;font-size:12px;font-weight:700;color:#0F172A;font-family:'DM Mono',monospace;text-align:right" id="th-occ-healthy-val">93%</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:60px;font-size:11px;color:#D97706;font-weight:600">Warning ≥</div>
+        <input type="range" id="th-occ-warning" min="70" max="92" value="88" oninput="updateThresholdPreview()" style="flex:1;accent-color:#D97706">
+        <div style="width:42px;font-size:12px;font-weight:700;color:#0F172A;font-family:'DM Mono',monospace;text-align:right" id="th-occ-warning-val">88%</div>
+      </div>
+      <div style="font-size:10px;color:#94A3B8;margin-top:4px">Below warning threshold = red, flagged for review</div>
+    </div>
+
+    <div style="margin-bottom:18px">
+      <div style="font-size:12px;font-weight:700;color:#0F172A;margin-bottom:3px">Reputation</div>
+      <div style="font-size:11px;color:#64748B;margin-bottom:10px">Minimum score before a property is flagged for reputation risk</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:60px;font-size:11px;color:#D97706;font-weight:600">Flag below</div>
+        <input type="range" id="th-rep" min="30" max="48" value="40" oninput="updateThresholdPreview()" style="flex:1;accent-color:#D97706">
+        <div style="width:42px;font-size:12px;font-weight:700;color:#0F172A;font-family:'DM Mono',monospace;text-align:right" id="th-rep-val">4.0</div>
+      </div>
+    </div>
+
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px 14px;margin-bottom:16px">
+      <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Live preview</div>
+      <div style="display:flex;gap:10px">
+        <span class="metric-chip" id="th-preview-green" style="background:rgba(22,163,74,.12);color:#16A34A">94.2%</span>
+        <span class="metric-chip" id="th-preview-yellow" style="background:rgba(217,119,6,.12);color:#D97706">89.0%</span>
+        <span class="metric-chip" id="th-preview-red" style="background:rgba(220,38,38,.12);color:#DC2626">85.5%</span>
+      </div>
+      <div style="font-size:10px;color:#94A3B8;margin-top:8px" id="th-impact-note">Recalculates live as you adjust &mdash; will affect 14 properties on this portfolio</div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button id="thresh-save-btn" onclick="saveThresholds()" style="flex:1;padding:9px;background:#2563EB;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Save Thresholds</button>
+      <button onclick="closeThresholds()" style="padding:9px 14px;background:#fff;color:#64748B;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif">Cancel</button>
+    </div>
+  </div>
+</div>
+</div>
+
 <div id="toast">Report sent</div>
 <script>
 var screens={dash:'screen-dash',editor:'screen-editor',detail:'screen-detail',preview:'screen-preview'};
+// Configurable flagging thresholds — adjustable via the Thresholds settings modal.
+// rowHTML() reads these live, so changing them re-colors the table on next render.
+var OCC_HEALTHY=93, OCC_WARNING=88, REP_THRESHOLD=4.0;
 var crumbs={dash:[],editor:[{l:'Dashboard',t:'dash'}],detail:[{l:'Dashboard',t:'dash'},{l:'June 2026 Draft',t:'editor-back'}],preview:[{l:'Dashboard',t:'dash'},{l:'June 2026 Draft',t:'editor'}]};
 var screenNames={dash:'Dashboard',editor:'June 2026 Draft',detail:'Source Data',preview:'Preview & Send'};
 var current='dash';
@@ -904,13 +1013,15 @@ function renderTable(){
 function rowHTML(a){
   var isBlocked=a.status==='blocked',isInReview=a.status==='inreview',isApproved=a.status==='approved',isSent=a.status==='sent';
   var dotC={approved:'sd-green',inreview:'sd-blue',pending:'sd-yellow',blocked:'sd-red',sent:'sd-teal'}[a.status]||'sd-yellow';
-  var occC=a.occ>=93?'mc-green':(a.occ>=88?'mc-yellow':'mc-red');
+  var occC=a.occ>=OCC_HEALTHY?'mc-green':(a.occ>=OCC_WARNING?'mc-yellow':'mc-red');
   var trendH=isBlocked?'<span style="color:var(--text3)">—</span>':(a.trend==='flat'?'<span style="color:var(--text3);font-size:11px">→ flat</span>':(a.trend&&a.trend[0]==='+'?'<span style="color:var(--green);font-size:11px">↑ '+a.trend+'</span>':'<span style="color:var(--red);font-size:11px">↓ '+a.trend+'</span>'));
   var repH=isBlocked||!a.rep?'<span style="color:var(--text3)">—</span>':'<span style="color:'+(a.rep>=4.5?'var(--green)':(a.rep>=4.0?'var(--yellow)':'var(--red)'))+'">'+a.rep+' ★</span>';
   var bC={approved:'rb-approved',inreview:'rb-inreview',pending:'rb-pending',blocked:'rb-blocked',sent:'rb-sent'}[a.status]||'rb-pending';
-  var bT={approved:'Approved',inreview:'In Review',pending:'Ready for Review',blocked:'Needs Attention',sent:'Sent ✓'}[a.status]||'Pending';
+  var bT=a.needsSetup?'Needs Setup':({approved:'Approved',inreview:'In Review',pending:'Ready for Review',blocked:'Needs Attention',sent:'Sent ✓'}[a.status]||'Pending');
   var n=escQ(a.name),c=escQ(a.city);
-  var actH=isBlocked
+  var actH=a.needsSetup
+    ?'<button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();openImportReports()">Import Reports</button>'
+    :(isBlocked
     ?'<button class="btn btn-red" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();fixDataSource(\''+n+'\')">Fix Source</button>'
     :(isSent
       ?'<span style="font-size:11px;color:var(--teal)">✓ Delivered</span>'
@@ -918,8 +1029,8 @@ function rowHTML(a){
         ?'<button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();openEditor(\''+n+'\',\''+c+'\')">View</button>'
         :(isInReview
           ?'<button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();openEditor(\''+n+'\',\''+c+'\')">Resume →</button>'
-          :'<button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();openEditor(\''+n+'\',\''+c+'\')">Review</button>')));
-  var rowC='prop-row'+(isBlocked?' urgent-row':(a.occ<89&&!isBlocked&&!isSent?' flagged-row':(isInReview?' inreview-row':'')));
+          :'<button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();openEditor(\''+n+'\',\''+c+'\')">Review</button>'))));
+  var rowC='prop-row'+(isBlocked?' urgent-row':(a.occ<OCC_WARNING&&!isBlocked&&!isSent?' flagged-row':(isInReview?' inreview-row':'')));
   var rowClick=(isBlocked||isSent)?'':' onclick="openEditor(\''+n+'\',\''+c+'\')"';
   var rowCur=(isBlocked||isSent)?' style="cursor:default"':'';
 
@@ -937,14 +1048,14 @@ function rowHTML(a){
     +'<td><div class="status-dot '+dotC+'"></div></td>'
     +'<td><div class="prop-name">'+a.name+'</div><div class="prop-addr">'+a.city+' &middot; '+a.units+' units</div></td>'
     +'<td style="font-size:11px;color:var(--text2);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.owner+'</td>'
-    +'<td data-tip="'+occTip+'"><span class="metric-chip '+occC+'">'+a.occ+'%</span></td>'
+    +'<td data-tip="'+occTip+'">'+(a.needsSetup?'<span style="color:var(--text3)">— Setup needed</span>':'<span class="metric-chip '+occC+'">'+a.occ+'%</span>')+'</td>'
     +'<td data-tip="'+vacTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.vac+' units')+'</td>'
     +'<td data-tip="'+leadsTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.leads)+'</td>'
     +'<td data-tip="'+l2lTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.l2l+'%')+'</td>'
     +'<td data-tip="'+(isBlocked?'Data unavailable — source connection blocked':repTip)+'">'+repH+'</td>'
     +'<td data-tip="'+trendTip+'">'+trendH+'</td>'
     +'<td><span class="rbadge '+bC+'">'+bT+'</span></td>'
-    +'<td class="row-actions" onclick="event.stopPropagation()">'+actH+'</td>'
+    +'<td class="row-actions" onclick="event.stopPropagation()"><div class="row-actions-inner">'+actH+'</div></td>'
     +'</tr>';
 }
 // ── GLOBAL TOOLTIP ENGINE (no position:relative on cells — uses fixed div) ──
@@ -1393,7 +1504,8 @@ function buildSlidesForProperty(name){
           before:'$28 · ↑ rising',
           after:'$21 · ↓ from $28',
           why:'Zillow CPL improved for 3rd consecutive month. Now flagged as "falling" not "rising" — changes channel ranking.',
-          highlightTarget:'table-row-0'
+          highlightTarget:'table-row-0',
+          trend:[{m:'Mar',v:32},{m:'Apr',v:28},{m:'May',v:24},{m:'Jun',v:21}]
         }
       ]
     },
@@ -1443,7 +1555,8 @@ function buildSlidesForProperty(name){
           before:'Monitor Zillow performance. CPL trending down from $34. Watch for 2 more cycles before acting.',
           after:p.recs[0]?p.recs[0].text:'Increase Zillow budget 15%. CPL $21 vs portfolio median $34. 3-month improving trend.',
           why:'Zillow CPL held below $25 for 3 consecutive months — the defined threshold for escalating from "monitor" to "act". Knowledge Fabric triggered the upgrade.',
-          highlightTarget:'rec-0'
+          highlightTarget:'rec-0',
+          trend:[{m:'Mar',v:32},{m:'Apr',v:28},{m:'May',v:24},{m:'Jun',v:21}]
         },
         {
           slideId:10,key:'rec-3',type:'rec',
@@ -1451,7 +1564,8 @@ function buildSlidesForProperty(name){
           before:'Continue monitoring Google Ads. CPL elevated at $52 but insufficient data.',
           after:p.recs[2]?p.recs[2].text:'Reallocate 20% of Google Ads budget to Zillow. CPL gap ($47 vs $21) now structurally consistent.',
           why:'Google Ads CPL gap vs Zillow widened for 2nd month. AI crossed its reallocation confidence threshold.',
-          highlightTarget:'rec-2'
+          highlightTarget:'rec-2',
+          trend:[{m:'Apr',v:38},{m:'May',v:44},{m:'Jun',v:47}]
         }
       ]
     }
@@ -1582,6 +1696,18 @@ function prevSlide(){if(currentSlide>0)goToSlide(currentSlide-1);}
 function nextSlide(){if(currentSlide<SLIDES.length-1)goToSlide(currentSlide+1);}
 
 // ── DIFF PANEL (presentation-level — AI judgment changes only) ──
+// Inline trend evidence — renders a small sparkline backing a multi-month claim
+// ("CPL held below $25 for 3 consecutive months"). This is the MVP answer to
+// "let me verify that" without a full report archive: the receipt is right there.
+function renderTrendSparkline(trend){
+  if(!trend||!trend.length)return '';
+  var parts=trend.map(function(t){return t.m+' $'+t.v;}).join('  →  ');
+  return '<div style="margin-top:6px;padding:7px 10px;background:rgba(0,0,0,.02);border:1px solid var(--border);border-radius:6px">'
+    +'<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">Trend backing this claim</div>'
+    +'<div style="font-size:11px;color:var(--text);font-family:\'DM Mono\',monospace">'+parts+'</div>'
+  +'</div>';
+}
+
 function buildDiffPanel(){
   // Collect all diffItems, resolving array index from slide.id at call time
   // so stale indices from SLIDES mutation are never used
@@ -1622,6 +1748,7 @@ function buildDiffPanel(){
           +'<div class="diff-col diff-col-after"><div class="diff-col-label">June 2026</div>'+item.after+'</div>'
         +'</div>'
         +'<div class="diff-reason"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px;opacity:.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(item.why||'')+'</div>'
+        +renderTrendSparkline(item.trend)
       +'</div>'
       +'<div class="diff-item-slide-tag">Slide '+slideNum+'</div>'
     +'</div>';
@@ -1659,12 +1786,13 @@ function openSlidePopover(slideIdx){
         +'</span>'
       +'</div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">'
-        +'<div style="font-size:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.12);border-radius:4px;padding:5px 7px;line-height:1.5;color:#94A3B8"><div style="font-size:9px;font-weight:700;opacity:.5;margin-bottom:2px">MAY 2025</div>'+item.before+'</div>'
-        +'<div style="font-size:10px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:4px;padding:5px 7px;line-height:1.5;color:var(--text)"><div style="font-size:9px;font-weight:700;opacity:.5;margin-bottom:2px">JUNE 2025</div>'+item.after+'</div>'
+        +'<div style="font-size:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.12);border-radius:4px;padding:5px 7px;line-height:1.5;color:#94A3B8"><div style="font-size:9px;font-weight:700;opacity:.5;margin-bottom:2px">MAY 2026</div>'+item.before+'</div>'
+        +'<div style="font-size:10px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:4px;padding:5px 7px;line-height:1.5;color:var(--text)"><div style="font-size:9px;font-weight:700;opacity:.5;margin-bottom:2px">JUNE 2026</div>'+item.after+'</div>'
       +'</div>'
       +'<div style="font-size:10px;color:var(--text3);line-height:1.5">'
         +'<span style="font-weight:600;color:var(--text2)">Why: </span>'+item.why
       +'</div>'
+      +renderTrendSparkline(item.trend)
       +'<button onclick="closeSlidePopover();goToSlide('+slideIdx+',\''+item.highlightTarget+'\')" style="margin-top:7px;font-size:10px;padding:4px 10px;background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.25);border-radius:5px;cursor:pointer;font-family:\'Inter\',sans-serif;font-weight:600">Show me on slide &rarr;</button>'
     +'</div>';
   });
@@ -1894,10 +2022,40 @@ function showEditorTyping(){
 function removeEditorTyping(){var w=document.getElementById('editor-chat').querySelector('.typing-wrap');if(w)w.remove();}
 function handleEditorReply(msg){
   var m=msg.toLowerCase();
-  if(m.indexOf('tone')>=0||m.indexOf('bullet')>=0) appendEditorAction('Rewrite Slide 3 \u2014 Bullet Format','Current: paragraph (87 words). Proposed: 3 bullets covering occupancy, leads, conversion vs benchmark. Standing rule saved for Greystar.','tone');
+  var disputeSignals=['misleading','wrong','disagree','doesn\'t account','does not account','incorrect','not accurate','overstat','understat','seasonal'];
+  var isDispute=disputeSignals.some(function(s){return m.indexOf(s)>=0;});
+  if(isDispute){
+    appendEditorDisputeResponse(msg);
+  }
+  else if(m.indexOf('tone')>=0||m.indexOf('bullet')>=0) appendEditorAction('Rewrite Slide 3 \u2014 Bullet Format','Current: paragraph (87 words). Proposed: 3 bullets covering occupancy, leads, conversion vs benchmark. Standing rule saved for Greystar.','tone');
   else if(m.indexOf('vacanc')>=0||m.indexOf('trend')>=0) appendEditorAction('Add Slide: Vacancy Trend','Bar chart after slide 4: vacancy 22 \u2192 19 \u2192 17 \u2192 13 units (Mar\u2013Jun). Deck becomes 12 slides.','addslide');
   else if(m.indexOf('zillow')>=0) appendEditorAction('Expand Zillow Analysis','Add CPL trend column: Zillow improved $28 \u2192 $24 \u2192 $21 over 3 months.','zillow');
   else appendEditorAction('Apply Change','Will apply this to the relevant slide. Confirm to proceed.','generic');
+}
+// A PM disagreeing with a recommendation's reasoning is a different input than a
+// formatting request. The agent should acknowledge the substance of the disagreement
+// and propose a concrete fix to the underlying logic — not just rewrite text, and not
+// force the PM into a separate "edit reasoning" UI for something that's inherently
+// a judgment call best expressed in language.
+function appendEditorDisputeResponse(msg){
+  var c=document.getElementById('editor-chat');var d=document.createElement('div');d.className='chat-msg';
+  d.innerHTML='<div class="msg-from">Agent</div><div class="msg-bubble msg-ai">Understood \u2014 that\'s a fair read. The recommendation didn\'t weight the seasonal lease-up pattern, so the CPL comparison is comparing two different points in the leasing cycle.</div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+  setTimeout(function(){
+    var d2=document.createElement('div');d2.className='chat-msg';
+    d2.innerHTML='<div class="msg-from">Agent</div><div class="msg-action-card"><div class="msg-action-title">Revise Recommendation 1 \u2014 Add Seasonal Context</div><div class="msg-action-preview">Current: "Increase Zillow budget 15%. Cost/lead $21 vs portfolio median $34."\n\nRevised: "Increase Zillow budget 15%. Cost/lead $21 vs portfolio median $34 \u2014 partly explained by seasonal lease-up timing. Recommend re-evaluating after the August renewal cycle to confirm the trend holds outside peak season."\n\nThis input is also saved to the Knowledge Fabric \u2014 future cycles for this property will weight seasonal timing before recommending budget changes.</div><div class="msg-action-btns"><button class="btn-approve" onclick="approveDisputeRevision(this)">Approve</button><button class="btn-reject" onclick="rejectEditorAction(this)">Adjust</button></div></div>';
+    c.appendChild(d2);c.scrollTop=c.scrollHeight;
+  },900);
+}
+function approveDisputeRevision(btn){
+  btn.closest('.msg-action-card').querySelector('.msg-action-btns').innerHTML='<span style="font-size:11px;color:var(--green);font-weight:600">\u2713 Applying...</span>';
+  setTimeout(function(){
+    if(SLIDES[10]&&SLIDES[10].recs&&SLIDES[10].recs[0]){
+      SLIDES[10].recs[0].text='Increase Zillow budget 15%. Cost/lead $21 vs portfolio median $34 \u2014 partly explained by seasonal lease-up timing. Re-evaluate after the August renewal cycle.';
+      if(currentSlide===10)renderSlide(10);
+    }
+    appendEditorMsg('Agent','Recommendation revised and noted in the Knowledge Fabric for this property.','ai');
+  },600);
 }
 function appendEditorAction(title,preview,scope){
   var c=document.getElementById('editor-chat');var d=document.createElement('div');d.className='chat-msg';
@@ -2187,6 +2345,12 @@ function approveOnly(){
   }
   showToast(currentPropName+' approved \u2014 ready to send when you are.');
 }
+// MVP: PM can download the PDF directly from preview, in addition to in-app send.
+function downloadReportPdf(){
+  showToast('Downloading PDF \u2014 '+currentPropName+', June 2026');
+  if(typeof exportReport==='function')exportReport();
+}
+
 function publishReport(){
   markSent(currentPropName);
   updateStatCounts();
@@ -2243,10 +2407,25 @@ function agentSugg(type){
 }
 function handleAgentReply(msg){
   var m=msg.toLowerCase();
-  if(m.indexOf('priorit')>=0||m.indexOf('attention')>=0) appendAgentMsg('Priority order:\n1. Northgate Flats \u2014 MLS expired, blocked\n2. Ridgecrest \u2014 occupancy 86.7%, below threshold\n3. Park Row East \u2014 lead-to-lease down 1.2pts MoM','ai');
+  if(m.indexOf('priorit')>=0||m.indexOf('attention')>=0) appendAgentMsg('Priority order:\n1. <a href="#" onclick="handoffToReport(\'Northgate Flats\',\'Phoenix, AZ\',\'You flagged this as top priority \u2014 MLS expired, blocked\');return false;" style="color:var(--accent);font-weight:600;text-decoration:none">Northgate Flats \u2192</a> \u2014 MLS expired, blocked\n2. <a href="#" onclick="handoffToReport(\'Ridgecrest\',\'Dallas, TX\',\'You flagged this as priority 2 \u2014 occupancy 86.7%, below threshold\');return false;" style="color:var(--accent);font-weight:600;text-decoration:none">Ridgecrest \u2192</a> \u2014 occupancy 86.7%, below threshold\n3. <a href="#" onclick="handoffToReport(\'Park Row East\',\'Nashville, TN\',\'You flagged this as priority 3 \u2014 lead-to-lease down 1.2pts MoM\');return false;" style="color:var(--accent);font-weight:600;text-decoration:none">Park Row East \u2192</a> \u2014 lead-to-lease down 1.2pts MoM','ai');
   else if(m.indexOf('fix')>=0||m.indexOf('missing')>=0) appendAgentActionCard('Re-authenticate MLS \u2014 2 Assets','Northgate Flats and Maple & Oak have expired MLS sessions. I can re-initiate using vaulted credentials. Both drafts will regenerate automatically once reconnected.');
   else if(m.indexOf('tone')>=0) appendAgentActionCard('Apply Riverside Style \u2014 5 Pending Assets','Will apply Riverside Commons tone, structure, and Greystar rules to all 5 pending drafts. Each PM can override per-asset.');
   else appendAgentActionCard('Proposed Action','Based on: "'+msg.slice(0,50)+'..."\n\nConfirm to apply across your portfolio.');
+}
+// Carries intent (not full transcript) from the portfolio agent into a specific report's editor.
+// This is the mechanism that makes "the same agent" legible across scopes without merging
+// two unrelated conversations into one confusing thread.
+function handoffToReport(name,city,contextNote){
+  closeAgent();
+  openEditor(name,city);
+  setTimeout(function(){
+    var c=document.getElementById('editor-chat');
+    if(c){
+      var d=document.createElement('div');d.className='chat-msg';
+      d.innerHTML='<div class="msg-from">Agent</div><div class="msg-bubble msg-ai" style="background:var(--surface3);border:1px dashed var(--border2)"><span style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;font-weight:700">Carried from Portfolio Agent</span><br>'+contextNote+'</div>';
+      c.appendChild(d);c.scrollTop=c.scrollHeight;
+    }
+  },500);
 }
 function appendAgentMsg(text,type){
   var c=document.getElementById('agent-msgs');var d=document.createElement('div');
@@ -2321,6 +2500,130 @@ function generateAllDrafts(){showToast('All 10 drafts generated overnight \u2014
 function fixDataSource(name){document.getElementById('fix-asset-name').textContent=name;document.getElementById('fix-modal').style.display='block';document.getElementById('fix-backdrop').style.display='block';}
 function closeFixData(){document.getElementById('fix-modal').style.display='none';document.getElementById('fix-backdrop').style.display='none';}
 function reAuthMLS(){var btn=document.getElementById('reauth-btn');btn.textContent='Re-authenticating...';btn.disabled=true;setTimeout(function(){closeFixData();showToast('MLS re-authenticated. Data pulling now.');},2000);}
+
+// ── ADD ASSET ──
+function openAddAsset(){
+  document.getElementById('add-asset-modal').style.display='block';
+  document.getElementById('add-asset-backdrop').style.display='block';
+}
+function closeAddAsset(){
+  document.getElementById('add-asset-modal').style.display='none';
+  document.getElementById('add-asset-backdrop').style.display='none';
+  ['aa-name','aa-units','aa-city'].forEach(function(id){document.getElementById(id).value='';});
+}
+function submitAddAsset(){
+  var name=document.getElementById('aa-name').value.trim();
+  var units=document.getElementById('aa-units').value.trim();
+  var city=document.getElementById('aa-city').value.trim();
+  var owner=document.getElementById('aa-owner').value;
+  if(!name||!city){showToast('Property name and city are required');return;}
+  var btn=document.getElementById('aa-submit-btn');
+  btn.textContent='Adding...';btn.disabled=true;
+  setTimeout(function(){
+    // Add a new asset to ALL_ASSETS with needs-setup status
+    ALL_ASSETS.unshift({
+      name:name,city:city,units:parseInt(units)||0,owner:owner,
+      occ:0,vac:0,leads:null,l2l:null,rep:null,trend:null,
+      status:'blocked',needsSetup:true
+    });
+    closeAddAsset();
+    dashPage=1;dashFilter='all';
+    document.querySelectorAll('.filter-pill').forEach(function(p){p.classList.remove('active');});
+    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+    renderTable();updateStatCounts();
+    showToast(name+' added \u2014 connect data sources to start generating reports');
+    btn.textContent='Add Asset';btn.disabled=false;
+  },900);
+}
+
+// ── IMPORT REPORTS ──
+var selectedImportMethod=null;
+function openImportReports(){
+  document.getElementById('import-modal').style.display='block';
+  document.getElementById('import-backdrop').style.display='block';
+}
+function closeImportReports(){
+  document.getElementById('import-modal').style.display='none';
+  document.getElementById('import-backdrop').style.display='none';
+  selectedImportMethod=null;
+  document.querySelectorAll('.import-option').forEach(function(o){o.style.borderColor='#E2E8F0';o.style.background='#fff';});
+  var btn=document.getElementById('import-submit-btn');
+  btn.textContent='Select a method';btn.disabled=true;btn.style.background='#94A3B8';btn.style.cursor='not-allowed';
+}
+function selectImportMethod(el,method){
+  selectedImportMethod=method;
+  document.querySelectorAll('.import-option').forEach(function(o){o.style.borderColor='#E2E8F0';o.style.background='#fff';});
+  el.style.borderColor='#2563EB';el.style.background='#EFF6FF';
+  var btn=document.getElementById('import-submit-btn');
+  btn.disabled=false;btn.style.background='#2563EB';btn.style.cursor='pointer';
+  var labels={csv:'Upload CSV / Excel',pdf:'Upload PDF Reports'};
+  btn.textContent=labels[method];
+}
+function submitImport(){
+  if(!selectedImportMethod)return;
+  var btn=document.getElementById('import-submit-btn');
+  btn.textContent='Processing...';btn.disabled=true;
+  setTimeout(function(){
+    closeImportReports();
+    var msgs={
+      csv:'12 months of report data imported \u2014 ready for comparison in Past Reports',
+      pdf:'Extracting data from uploaded PDFs \u2014 this typically takes a few minutes'
+    };
+    showToast(msgs[selectedImportMethod]);
+  },1200);
+}
+
+// ── FLAGGING THRESHOLDS ──
+function openThresholds(){
+  document.getElementById('th-occ-healthy').value=OCC_HEALTHY;
+  document.getElementById('th-occ-warning').value=OCC_WARNING;
+  document.getElementById('th-rep').value=Math.round(REP_THRESHOLD*10);
+  updateThresholdPreview();
+  document.getElementById('thresh-modal').style.display='block';
+  document.getElementById('thresh-backdrop').style.display='block';
+}
+function closeThresholds(){
+  document.getElementById('thresh-modal').style.display='none';
+  document.getElementById('thresh-backdrop').style.display='none';
+}
+function updateThresholdPreview(){
+  var healthy=parseInt(document.getElementById('th-occ-healthy').value);
+  var warning=parseInt(document.getElementById('th-occ-warning').value);
+  // Warning can never exceed healthy — keep the sliders logically consistent
+  if(warning>=healthy){warning=healthy-1;document.getElementById('th-occ-warning').value=warning;}
+  var repRaw=parseInt(document.getElementById('th-rep').value);
+  var rep=(repRaw/10).toFixed(1);
+
+  document.getElementById('th-occ-healthy-val').textContent=healthy+'%';
+  document.getElementById('th-occ-warning-val').textContent=warning+'%';
+  document.getElementById('th-rep-val').textContent=rep;
+
+  // Live preview chips
+  var sampleHigh=94.2, sampleMid=89.0, sampleLow=85.5;
+  function chipColor(val){return val>=healthy?{bg:'rgba(22,163,74,.12)',fg:'#16A34A'}:(val>=warning?{bg:'rgba(217,119,6,.12)',fg:'#D97706'}:{bg:'rgba(220,38,38,.12)',fg:'#DC2626'});}
+  [['th-preview-green',sampleHigh],['th-preview-yellow',sampleMid],['th-preview-red',sampleLow]].forEach(function(pair){
+    var el=document.getElementById(pair[0]);var c=chipColor(pair[1]);
+    el.style.background=c.bg;el.style.color=c.fg;el.textContent=pair[1]+'%';
+  });
+
+  // Count how many real assets in ALL_ASSETS would be affected by this change vs current thresholds
+  var wouldFlag=ALL_ASSETS.filter(function(a){return a.occ>0 && a.occ<warning;}).length;
+  var currentlyFlagged=ALL_ASSETS.filter(function(a){return a.occ>0 && a.occ<OCC_WARNING;}).length;
+  var diff=wouldFlag-currentlyFlagged;
+  var note=document.getElementById('th-impact-note');
+  if(diff===0) note.textContent='No change \u2014 '+wouldFlag+' properties currently below this threshold';
+  else if(diff>0) note.textContent='+'+diff+' more properties would be flagged ('+wouldFlag+' total vs '+currentlyFlagged+' today)';
+  else note.textContent=Math.abs(diff)+' fewer properties would be flagged ('+wouldFlag+' total vs '+currentlyFlagged+' today)';
+}
+function saveThresholds(){
+  OCC_HEALTHY=parseInt(document.getElementById('th-occ-healthy').value);
+  OCC_WARNING=parseInt(document.getElementById('th-occ-warning').value);
+  REP_THRESHOLD=parseInt(document.getElementById('th-rep').value)/10;
+  closeThresholds();
+  renderTable();
+  showToast('Thresholds updated \u2014 dashboard recolored');
+}
+
 
 // TOAST
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';setTimeout(function(){t.style.transform='translateX(-50%) translateY(80px)';},3000);}
