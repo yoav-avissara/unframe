@@ -856,7 +856,9 @@ var crumbs={dash:[],editor:[{l:'Dashboard',t:'dash'}],detail:[{l:'Dashboard',t:'
 var screenNames={dash:'Dashboard',editor:'June 2026 Draft',detail:'Source Data',preview:'Preview & Send'};
 var current='dash';
 
+var navGeneration=0;
 function goTo(s){
+  navGeneration++; // invalidates any pending deferred transition (e.g. leaveEditor's queued goTo('dash'))
   if(s==='editor-back'){
     // Return to editor without resetting chat or slides
     document.getElementById(screens[current]).classList.remove('active');
@@ -1146,7 +1148,13 @@ function leaveEditor(){
   }
   hasUnsavedChanges=false;
   showToast('Draft saved \u2014 '+currentPropName+' is In Review.');
-  setTimeout(function(){goTo('dash');renderTable();},900);
+  var myGen=++navGeneration;
+  setTimeout(function(){
+    // If the user already navigated elsewhere (e.g. straight into another report)
+    // before this queued transition fired, skip it — don't yank them back to dash.
+    if(myGen!==navGeneration)return;
+    goTo('dash');renderTable();
+  },900);
 }
 
 function sendAllApproved(){
@@ -2357,7 +2365,11 @@ function publishReport(){
   var recipCount=toRecipients.length+ccRecipients.length;
   var recipMsg=recipCount===1?toRecipients[0]:recipCount+' recipients';
   showToast('Sent to '+recipMsg+' \u2014 '+currentPropName+', June 2026');
-  setTimeout(function(){goTo('dash');renderTable();setTimeout(showNextBanner,400);},1800);
+  var myGen=++navGeneration;
+  setTimeout(function(){
+    if(myGen!==navGeneration)return;
+    goTo('dash');renderTable();setTimeout(showNextBanner,400);
+  },1800);
 }
 function showNextBanner(){
   var old=document.getElementById('next-banner');if(old)old.remove();
