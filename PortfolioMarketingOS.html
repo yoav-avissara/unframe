@@ -6,7 +6,7 @@
 <title>Unframe — Portfolio Marketing OS</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
-:root{--bg:#0C0F1A;--surface:#131929;--surface2:#1A2236;--surface3:#1F2B42;--border:#26344F;--border2:#2E3F5C;--text:#E8EDF5;--text2:#8A9BB8;--text3:#556078;--accent:#4F8EF7;--accent2:#2563EB;--green:#22C55E;--yellow:#F59E0B;--red:#EF4444;--blue:#4F8EF7;--purple:#A78BFA;--teal:#14B8A6;--mono:'DM Mono',monospace}
+:root{--bg:#F8FAFC;--surface:#FFFFFF;--surface2:#F1F5F9;--surface3:#E9EEF5;--border:#E2E8F0;--border2:#CBD5E1;--text:#0F172A;--text2:#475569;--text3:#94A3B8;--accent:#2563EB;--accent2:#1D4ED8;--green:#16A34A;--yellow:#D97706;--red:#DC2626;--blue:#2563EB;--purple:#7C3AED;--teal:#0D9488;--mono:'DM Mono',monospace}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
 .topnav{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:20px;flex-shrink:0}
@@ -18,7 +18,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .breadcrumb{padding:9px 24px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
 .bc-link{cursor:pointer;transition:color .15s}.bc-link:hover{color:var(--accent)}.bc-active{color:var(--text2)}.bc-sep{color:var(--border2)}
 .screen{display:none;flex:1;overflow:hidden;flex-direction:column}.screen.active{display:flex}
-.scroll-area{flex:1;overflow-y:auto;padding:24px}.scroll-area::-webkit-scrollbar{width:4px}.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.scroll-area{flex:1;overflow-y:auto;padding:24px}
+#screen-dash .scroll-area{overflow-x:auto}.scroll-area::-webkit-scrollbar{width:4px}.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap}
 .btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
@@ -65,7 +66,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .rail-thumb-num{font-size:9px;color:var(--text3);font-family:var(--mono)}
 .rail-thumb-tag{font-size:8px;padding:1px 3px;border-radius:3px;font-weight:600}
 .rtag-changed{background:rgba(245,158,11,.2);color:var(--yellow)}.rtag-ai{background:rgba(79,142,247,.2);color:var(--accent)}
-.slide-canvas-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#09111F}
+.slide-canvas-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#E2E8F0}
 .editor-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
 .editor-title{font-size:13px;font-weight:600}.editor-meta{font-size:10px;color:var(--text3);margin-top:1px}
 .editor-actions{display:flex;gap:6px;flex-shrink:0}
@@ -278,7 +279,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .compare-pane-header{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px}
 .compare-pane-label{font-size:11px;font-weight:600;color:var(--text2)}
 .compare-divider{width:1px;background:var(--border);flex-shrink:0}
-.compare-viewport{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;background:#09111F}
+.compare-viewport{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;background:#E2E8F0}
 .past-month-btn{padding:6px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;text-align:left;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .past-month-btn:hover{border-color:var(--accent);color:var(--text)}
 .past-month-btn.active{background:rgba(79,142,247,.12);border-color:var(--accent);color:var(--accent)}
@@ -433,7 +434,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="slide-canvas-wrap">
       <div class="editor-topbar">
         <div>
-          <div class="editor-title" id="editor-title">June 2026 &middot; Riverside Commons</div>
+          <div class="editor-title" id="editor-title"><span id="editor-title-text">June 2026 &middot; Riverside Commons</span> <span id="editor-status-tag" style="display:none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(22,163,74,.1);color:var(--green);border:1px solid rgba(22,163,74,.25);vertical-align:middle;margin-left:4px">Approved</span></div>
           <div class="editor-meta" id="slide-pos-label">Slide 1 of 11 &middot; <span style="color:var(--yellow)">3 changes vs May</span></div>
         </div>
         <div class="editor-actions">
@@ -936,12 +937,12 @@ function rowHTML(a){
     +'<td><div class="status-dot '+dotC+'"></div></td>'
     +'<td><div class="prop-name">'+a.name+'</div><div class="prop-addr">'+a.city+' &middot; '+a.units+' units</div></td>'
     +'<td style="font-size:11px;color:var(--text2);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.owner+'</td>'
-    +'<td><span class="metric-chip '+occC+' tt" data-tip="'+occTip+'">'+a.occ+'%</span></td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+vacTip+'">'+a.vac+' units</span>')+'</td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+leadsTip+'">'+a.leads+'</span>')+'</td>'
-    +'<td>'+(isBlocked?'<span style="color:var(--text3)">—</span>':'<span class="tt" data-tip="'+l2lTip+'">'+a.l2l+'%</span>')+'</td>'
-    +'<td><span class="tt" data-tip="'+(isBlocked?'Data unavailable — source connection blocked':repTip)+'">'+repH+'</span></td>'
-    +'<td><span class="tt" data-tip="'+trendTip+'">'+trendH+'</span></td>'
+    +'<td data-tip="'+occTip+'"><span class="metric-chip '+occC+'">'+a.occ+'%</span></td>'
+    +'<td data-tip="'+vacTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.vac+' units')+'</td>'
+    +'<td data-tip="'+leadsTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.leads)+'</td>'
+    +'<td data-tip="'+l2lTip+'">'+(isBlocked?'<span style="color:var(--text3)">—</span>':a.l2l+'%')+'</td>'
+    +'<td data-tip="'+(isBlocked?'Data unavailable — source connection blocked':repTip)+'">'+repH+'</td>'
+    +'<td data-tip="'+trendTip+'">'+trendH+'</td>'
     +'<td><span class="rbadge '+bC+'">'+bT+'</span></td>'
     +'<td class="row-actions" onclick="event.stopPropagation()">'+actH+'</td>'
     +'</tr>';
@@ -1692,7 +1693,33 @@ function closeSlidePopover(){
 function initEditor(){
   // Always rebuild slides for the current property so switching assets works correctly
   buildSlidesForProperty(currentPropName);
-  document.getElementById('editor-title').textContent='June 2026 \u00b7 '+currentPropName;
+  // Update title text only — keep the status tag span intact
+  var titleTextEl=document.getElementById('editor-title-text');
+  if(titleTextEl)titleTextEl.textContent='June 2026 \u00b7 '+currentPropName;
+  // Reset approve button + status tag based on this asset's actual status
+  var asset=ALL_ASSETS.find(function(a){return a.name===currentPropName;});
+  var approveBtn=document.getElementById('approve-btn');
+  var statusTag=document.getElementById('editor-status-tag');
+  if(approveBtn&&statusTag){
+    if(asset&&(asset.status==='approved'||asset.status==='sent')){
+      approveBtn.innerHTML='&check; Approved';
+      approveBtn.disabled=true;
+      approveBtn.style.background='rgba(22,163,74,.1)';
+      approveBtn.style.color='var(--green)';
+      approveBtn.style.borderColor='rgba(22,163,74,.3)';
+      approveBtn.style.cursor='default';
+      statusTag.textContent=asset.status==='sent'?'Sent':'Approved — not yet sent';
+      statusTag.style.display='inline-flex';
+    } else {
+      approveBtn.innerHTML='&check; Approve';
+      approveBtn.disabled=false;
+      approveBtn.style.background='';
+      approveBtn.style.color='';
+      approveBtn.style.borderColor='';
+      approveBtn.style.cursor='';
+      statusTag.style.display='none';
+    }
+  }
   // Count AI judgment changes (diffItems), not just changed slides
   var judgmentCount=0;
   SLIDES.forEach(function(s){if(s.diffItems)judgmentCount+=s.diffItems.length;});
@@ -2143,8 +2170,22 @@ goToPreview=function(){
 function approveOnly(){
   markApproved(currentPropName);
   updateStatCounts();
-  showToast(currentPropName+' \u2014 Approved. Not yet sent.');
-  setTimeout(function(){goTo('dash');renderTable();},1500);
+  // Stay in the editor — update the Approve button and topbar status inline
+  var btn=document.getElementById('approve-btn');
+  if(btn){
+    btn.innerHTML='&check; Approved';
+    btn.disabled=true;
+    btn.style.background='rgba(22,163,74,.1)';
+    btn.style.color='var(--green)';
+    btn.style.borderColor='rgba(22,163,74,.3)';
+    btn.style.cursor='default';
+  }
+  var statusTag=document.getElementById('editor-status-tag');
+  if(statusTag){
+    statusTag.textContent='Approved — not yet sent';
+    statusTag.style.display='inline-flex';
+  }
+  showToast(currentPropName+' approved \u2014 ready to send when you are.');
 }
 function publishReport(){
   markSent(currentPropName);
